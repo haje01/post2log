@@ -1,6 +1,6 @@
 # post2log
 
-HTTP Postback 호출 (POST 메소드) 을 받아 그 내용을 로그로 기록한 후 [Fluentd](https://www.fluentd.org/) 등을 통해 [외부의 다양한 대상](https://www.fluentd.org/plugins/all#input-output) 으로 포워딩한다.
+외부 서버에서 HTTP Postback 호출 (POST 메소드) 을 받아 그 내용을 로그로 기록한 후 [Fluentd](https://www.fluentd.org/) 등을 통해 [외부의 다양한 대상](https://www.fluentd.org/plugins/all#input-output) 으로 포워딩한다.
 
 
 다음과 같은 환경변수를 이용해 설정할 수 있다:
