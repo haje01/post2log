@@ -5,9 +5,9 @@ HTTP Postback 호출 (POST 메소드) 을 받아 그 내용을 로그로 기록�
 
 다음과 같은 환경변수를 이용해 설정할 수 있다:
 - `P2L_PORT` - 웹훅 서버 포트. 기본값 80
-- `P2L_NODEPORT` - 노드포트 사용 여부. 기본값 ""
 - `P2L_ENDPOINT` - Postback 대상 엔드포인트. 기본값 `/postback`
 - `P2L_LOG_QUERYPARAM` - HTTP 쿼리 매개변수 로깅 여부. 기본값 `true`
+- `P2L_NODEPORT` - 노드포트 이용시 포트. 공백이면 사용 않음. 기본값 ""
 - `P2L_INGRESS_ANNOT` - Ingress 를 사용하는 경우 Annotations. 공백이면 사용 않음. 기본값 ""
 - `P2L_WORKERS` - 웹훅 서버의 워커 수. 기본값 1
 - `P2L_REPLICAS` - 웹훅 서버의 레플리카(파드) 수. 기본값 1
@@ -28,8 +28,12 @@ HTTP Postback 호출 (POST 메소드) 을 받아 그 내용을 로그로 기록�
 로컬에서 테스트 할때는 다음처럼 환경변수를 설정하면서 `skaffold dev` 명령으로 실행할 수 있다.
 
 ```bash
-P2L_STORAGE=1Gi skaffold dev --default-repo=docker.io/haje01
+P2L_STORAGE=1Gi skaffold dev --default-repo=<컨테이너 레포지토리>
 ```
+
+컨테이너 레포지토리는 로컬에서 빌드한 이미지를 Push / Pull 하기 위해 필요하다. 예를 들어 `docker.io/haje01` 과 같은 형식으로 기술하면 된다.
+
+> 처음에는 `No push access to specified image repository` 에러가 발생할 수 있다. 이때는  `docker login` 을 수행하자.
 
 로컬 클러스터인 경우 먼저 포트포워딩을 해주고,
 
@@ -60,7 +64,7 @@ curl -X POST "localhost:8080/postback?p1=v1&p2=v2"
 
 라이브시에는 다음처럼 `skaffold.env` 파일에 원하는 설정을 기술한 뒤,
 
-```
+```bash
 P2L_ENDPOINT=/postback/airbridge
 P2L_WORKERS=4
 P2L_STORAGE=8Gi
@@ -80,16 +84,14 @@ P2_FLUETND_OUTCONF="
 
 ## 외부 설치형 클러스터
 
-외부 서버에 K8S `minikube`, `k3s` 같은 배포본으로 클러스터를 설치하였다면, NodePort 서비스로 사용한다.
-
-
-```
-P2L_NODEPORT=30080 skaffold run --default-repo=docker.io/haje01
-```
-
-`skaffold run` 명령으로 배포할 수 있다.
+외부 서버에 K8S `minikube`, `k3s` 같은 배포본으로 클러스터를 설치하였다면, 다음처럼 NodePort 서비스를 사용하거나,
 
 ```bash
-skaffold run --default-repo=docker.io/haje01
+P2L_NODEPORT=30080 skaffold run --default-repo=<컨테이너 레포지토리>
 ```
 
+쿠버네티스 배포판에 맞는 Ingress 의 Annotation 을 설정해 Ingress 를 이용할 수도 있다. 다음은 k3s 에서 Traefik 을 이용하는 예이다.
+
+```bash
+P2L_INGRESS_ANNOT="kubernetes.io/ingress.class: traefik" skaffold run --default-repo=<컨테이너 레포지토리>
+```

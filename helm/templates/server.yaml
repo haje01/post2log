@@ -72,9 +72,9 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: post2log-ingress
+  name: post2log
   annotations:
-    {{ .Values.ingressAnnotations }}
+    {{ toYaml .Values.ingressAnnotations }}
 spec:
   rules:
   - http:

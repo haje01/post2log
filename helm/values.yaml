@@ -1,0 +1,19 @@
+# Helm 차트 디버깅을 위한 기본값
+port: 80
+nodePort: ""
+endpoint: /postback
+logQueryParam: true
+ingressAnnotations: ""
+workers: 1
+replicas: 1
+storage: 4Gi
+rotBytes: 10485760
+rotBackups: 5
+uvicorn:
+  logLevel: debug
+fluentd:
+  storage: 4Gi
+  outconf: |
+    <match post2log>
+      @type stdout
+    </match>
