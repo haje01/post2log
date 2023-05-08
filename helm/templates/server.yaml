@@ -74,7 +74,7 @@ kind: Ingress
 metadata:
   name: post2log
   annotations:
-    {{ toYaml .Values.ingressAnnotations }}
+    {{ .Values.ingressAnnotations }}
 spec:
   rules:
   - http:
