@@ -4,13 +4,13 @@ HTTP Postback 호출 (POST 메소드) 을 받아 그 내용을 로그로 기록�
 
 
 다음과 같은 환경변수를 이용해 설정할 수 있다:
-- `P2L_PORT` - 웹훅 서버 포트. 기본값 80
+- `P2L_PORT` - 포스트백 서버 포트. 기본값 80
 - `P2L_ENDPOINT` - Postback 대상 엔드포인트. 기본값 `/postback`
 - `P2L_LOG_QUERYPARAM` - HTTP 쿼리 매개변수 로깅 여부. 기본값 `true`
 - `P2L_NODEPORT` - 노드포트 이용시 포트. 공백이면 사용 않음. 기본값 ""
 - `P2L_INGRESS_ANNOT` - Ingress 를 사용하는 경우 Annotations. 공백이면 사용 않음. 기본값 ""
-- `P2L_WORKERS` - 웹훅 서버의 워커 수. 기본값 1
-- `P2L_REPLICAS` - 웹훅 서버의 레플리카(파드) 수. 기본값 1
+- `P2L_WORKERS` - 포스트백 서버의 워커 수. 기본값 1
+- `P2L_REPLICAS` - 포스트백 서버의 레플리카(파드) 수. 기본값 1
 - `P2L_STORAGE` - 로그 저장 스토리지 크기. 기본값 `4Gi`
 - `P2L_ROTBYTES` - 로그 파일 로테이션 기준 바이트수. 기본값 10485760 (= 10Mi)
 - `P2L_ROTBACKUPS` - 로그 파일 로테이션 백업 수. 기본값 5
