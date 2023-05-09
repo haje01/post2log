@@ -4,8 +4,6 @@ build:
   artifacts:
   - image: post2log
     context: server 
-  tagPolicy:
-    sha256: {}
 manifests:
   helm:
     releases:
