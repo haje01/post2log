@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: post2log
-        image: {{ .Value.image }}
+        image: post2log
         command: ["uvicorn"]        
         args: [
           "server:app", 

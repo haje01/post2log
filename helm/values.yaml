@@ -1,5 +1,7 @@
 # Helm 차트 디버깅을 위한 기본값
-image: post2log
+image: 
+  repository: docker.io/haje01/post2log
+  tag: latest
 port: 80
 nodePort: ""
 endpoint: /postback

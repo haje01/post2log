@@ -1,10 +1,8 @@
 apiVersion: skaffold/v4beta3
 kind: Config
 build:
-  tagPolicy:
-    gitCommit: {}
   local:
-    push: false
+    push: true
   artifacts:
   - image: post2log
     context: server 
@@ -17,7 +15,8 @@ manifests:
     - name: post2log
       chartPath: helm
       setValueTemplates:
-        image: "{{ .IMAGE_FULLY_QUALIFIED_NAME_post2log }}"
+        image.repository: "{{ .IMAGE_REPO_post2log }}"
+        image.tag: "{{ .IMAGE_TAG_post2log }}"
         port: "{{ or .P2L_PORT 80 }}"
         nodePort: "{{ or .P2L_NODEPORT \"\" }}"
         endpoint: "{{ or .P2L_ENDPOINT \"/postback\" }}"
