@@ -3,6 +3,8 @@ kind: Config
 build:
   tagPolicy:
     gitCommit: {}
+  local:
+    push: false
   artifacts:
   - image: post2log
     context: server 
