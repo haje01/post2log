@@ -17,6 +17,7 @@ manifests:
     - name: post2log
       chartPath: helm
       setValueTemplates:
+        image: "{{ .IMAGE_FULLY_QUALIFIED_NAME_post2log }}"
         port: "{{ or .P2L_PORT 80 }}"
         nodePort: "{{ or .P2L_NODEPORT \"\" }}"
         endpoint: "{{ or .P2L_ENDPOINT \"/postback\" }}"
