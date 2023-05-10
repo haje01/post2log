@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: post2log
-        image: post2log
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         command: ["uvicorn"]        
         args: [
           "server:app", 
