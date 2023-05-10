@@ -1,6 +1,8 @@
 apiVersion: skaffold/v4beta3
 kind: Config
 build:
+  tagPolicy:
+    gitCommit: {}
   local:
     push: true
   artifacts:
