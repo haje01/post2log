@@ -6,7 +6,7 @@ data:
   fluentd.conf: |
     <source>
       @type tail
-      path /post2log/post2log-*_*.txt
+      path /data/post2log-*_*.txt
       pos_file /fluentd-out/post2log.pos
       tag post2log
       path_key filename
@@ -76,7 +76,7 @@ spec:
         - name: config-vol
           mountPath: /fluentd/etc
         - name: post2log-vol
-          mountPath: /post2log
+          mountPath: /data
           readOnly: true
         - name: fluentd-out-vol
           mountPath: /fluentd-out
@@ -86,7 +86,7 @@ spec:
           name: fluentd-cm
       - name: post2log-vol
         hostPath:
-          path: /post2log
+          path: /data
       - name: fluentd-out-vol
         persistentVolumeClaim:
           claimName: fluentd-out-pvc
