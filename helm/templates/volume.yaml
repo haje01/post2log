@@ -10,7 +10,7 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   storageClassName: manual
   hostPath:
-    path: /post2log
+    path: /data
     type: DirectoryOrCreate
 ---
 apiVersion: v1

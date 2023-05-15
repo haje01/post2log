@@ -24,7 +24,7 @@ def create_logger(worker_id: int):
     logger = logging.getLogger(f"worker_{worker_id}")
     logger.setLevel(logging.INFO)
 
-    log_filename = f"/post2log/{POD_NAME}_{worker_id}.txt"
+    log_filename = f"/data/{POD_NAME}_{worker_id}.txt"
     handler = RotatingFileHandler(log_filename, maxBytes=LOG_ROT_BYTES, backupCount=LOG_ROT_BACKUPS)
     formatter = logging.Formatter(LOG_FORMAT)
     handler.setFormatter(formatter)    

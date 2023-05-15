@@ -45,7 +45,7 @@ spec:
           periodSeconds: 5  
         volumeMounts:
         - name: post2log-vol
-          mountPath: /post2log
+          mountPath: /data
       volumes:
       - name: post2log-vol
         persistentVolumeClaim:
