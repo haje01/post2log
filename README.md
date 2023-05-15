@@ -62,25 +62,6 @@ curl -X POST "localhost:8080/postback?p1=v1&p2=v2"
 - `_workerPodHash` - 서버가 위치한 파드의 해쉬 
 - `_workerProcId` - 서버 프로세스 ID
 
-라이브시에는 다음처럼 `skaffold.env` 파일에 원하는 설정을 기술한 뒤,
-
-```bash
-P2L_ENDPOINT=/postback/airbridge
-P2L_WORKERS=4
-P2L_STORAGE=8Gi
-P2_FLUETND_OUTCONF="
-# 최종 결과를 Kafka 로 보내는 경우
-<match post2log>
-  @type kafka_buffered
-  brokers my-kafka:9092
-  default_topic post2log
-  flush_interval 10s
-  <buffer>
-    flusth_interval 10s
-  </buffer> 
-</match>    
-"
-```
 
 ## 외부 설치형 클러스터
 
