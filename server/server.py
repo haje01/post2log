@@ -46,6 +46,7 @@ async def postback(request: Request):
     if log_queryparam:
         params = dict(request.query_params)
 
+    client_host = request.client.host
     raw_data = await request.body()
     try:
         data = json.loads(raw_data)
@@ -60,9 +61,9 @@ async def postback(request: Request):
     content.update({
         '_path': ENDPOINT,
         '_postTimestamp': post_ts, 
-        '_postDatetimeGMT': post_gmtdt
+        '_postDatetimeGMT': post_gmtdt,
+        '_clientHost': client_host
         }
     )
-    print(content)
     logger.info(json.dumps(content))
     return {"status": "success"}
