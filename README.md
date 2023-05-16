@@ -77,6 +77,19 @@ P2L_NODEPORT=30080 skaffold run --default-repo=<컨테이너 레포지토리>
 P2L_INGRESS_ANNOT="kubernetes.io/ingress.class: traefik" skaffold run --default-repo=<컨테이너 레포지토리>
 ```
 
+## Kafka 로 출력 
+
+`P2L_FLUENTD_OUTCONF` 에 대상 Kafka 정보를 기술하면 로그를 카프카로 보낼 수 있다. 다음 예제를 참고하자.
+
+```
+<match **>
+  @type kafka_buffered
+  brokers localhost:9092,localhost:9093
+  default_topic input
+  output_data_type json
+</match>
+```
+
 ## 성능 최적화
 
 기본적으로 HTTP 요청을 FastAPI 를 통해 비동기로 받은 뒤 파일에 저장하는 단순한 일이기에, 클러스터 노드를 추가하거나 `P2L_WORKERS` 나 `P2L_REPLICAS` 를 늘려주는 것으로 성능이 바로 향상되지 않을 수 있다. Fluentd 설정에 따른 다운스트림 작업의 경중에도 영향을 받을 것으로 생각되기에, 필요한 설정 후 최적화를 위한 다양한 실험이 필요할 것이다.
