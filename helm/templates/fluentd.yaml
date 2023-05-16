@@ -64,7 +64,7 @@ spec:
           mountPath: /fluentd-out
       containers:
       - name: fluentd
-        image: fluent/fluentd:v1.16
+        image: fluentd-kafka
         env:
         - name: FLUENTD_CONF
           value: "fluentd.conf"
