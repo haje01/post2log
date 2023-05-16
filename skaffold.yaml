@@ -7,9 +7,9 @@ build:
   artifacts:
   - image: post2log
     context: server 
-    docker:
-      cacheFrom:
-      - docker.io/haje01/post2log
+  - image: fluentd-kafka
+    context: fluentd-kafka
+
 manifests:
   helm:
     releases:
