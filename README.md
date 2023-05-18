@@ -2,6 +2,15 @@
 
 외부 서버에서 HTTP Postback 호출 (POST 메소드) 을 받아 그 내용을 로그로 기록한 후 [Fluentd](https://www.fluentd.org/) 등을 통해 [외부의 다양한 대상](https://www.fluentd.org/plugins/all#input-output) 으로 포워딩한다.
 
+## 설정
+
+먼저 쿠버네티스 클러스터내에서 post2log 를 배포할 노드들에 대해 다음과 같이 라벨을 설정한다.
+
+```
+kubectl label nodes post2log-1 post2log/node-type=server
+```
+
+> post2log 는 로그 수집을 위해 DaemonSet 을 통해 각 노드에 Fluentd 를 설치하는데, 클러스터내 다른 노드들에 설치되지 않도록 하기 위함이다.
 
 다음과 같은 환경변수를 이용해 설정할 수 있다:
 - `P2L_PORT` - 포스트백 서버 포트. 기본값 80
@@ -16,12 +25,7 @@
 - `P2L_ROTBACKUPS` - 로그 파일 로테이션 백업 수. 기본값 5
 - `P2L_UVICORN_LOGLEVEL` - Uvicorn 로그 레벨. 기본값 `debug`
 - `P2L_FLUENTD_STORAGE` - Fluentd 용 스토리지 크기. 기본값 `4Gi`
-- `P2L_FLUENTD_OUTCONF` - Fluentd 최종 출력 설정. 기본값은 아래와 같은 `stdout` 출력이다.
-  ```
-  <match post2log>
-    @type stdout
-  </match>
-  ```
+- `P2L_FLUENTD_EXTRACFG` - Fluentd 최종 출력 설정. 기본값 ""
 
 ## 로컬 클러스터
 
@@ -79,16 +83,37 @@ P2L_INGRESS_ANNOT="kubernetes.io/ingress.class: traefik" skaffold run --default-
 
 ## Kafka 로 출력 
 
-`P2L_FLUENTD_OUTCONF` 에 대상 Kafka 정보를 기술하면 로그를 카프카로 보낼 수 있다. 다음 예제를 참고하자.
+`P2L_FLUENTD_EXTRACFG` 에 Kafka 플러그인 정보를 기술하면 로그를 카프카로 보낼 수 있다. 아래는 간단한 예이다.
 
 ```
-<match **>
-  @type kafka_buffered
-  brokers localhost:9092,localhost:9093
-  default_topic input
-  output_data_type json
-</match>
+export P2L_FLUENTD_EXTRACFG="<match 태그>
+  @type kafka2
+  brokers <카프카 Service IP>:<카프카 Service Port>
+  use_event_time true
+  topic_key mytopic
+  default_topic mytopic
+  
+  <format>
+    @type json
+  </format>
+
+  <buffer>
+    @type memory
+    flush_mode interval
+    flush_interval 10s
+  </buffer>
+
+  # 디버깅용
+  # @log_level trace
+  # get_kafka_client_log true
+</match>"
+
+skaffold dev --default-repo=<컨테이너 레포지토리>
 ```
+
+> Fluentd 카프카 플러그인은 Kafka 에서 메시지를 보낼 파티션 리더의 도메인 명을 얻어와 접속을 시도하기에, post2log 가 설치된 서버에서 도메인 이름으로 각 브로커에 접속할 수 없다면 다음과 같은 방식을 검토해야 한다:
+> - Fluentd 장비의 /etc/hosts 에 도메인 등록하기
+> - 쿠버네티스 환경의 경우 같은 클러스터내에 배포하기 
 
 ## 성능 최적화
 

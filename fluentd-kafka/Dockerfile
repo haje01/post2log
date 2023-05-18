@@ -1,13 +1,23 @@
-# 첫 번째 빌드 스테이지: 플러그인 설치
-FROM fluent/fluentd:v1.16 as builder
-
-# 필요한 라이브러리와 헤더 설치 
-USER root
-RUN apk --no-cache --update add build-base ruby-dev 
-RUN fluent-gem install fluent-plugin-kafka
-
-# 두 번째 빌드 스테이지: 최종 이미지 생성
 FROM fluent/fluentd:v1.16
 
-# 첫 번째 스테이지에서 설치한 플러그인을 복사
-COPY --from=builder /fluentd/plugins/* /fluentd/plugins/
+# Use root account to use apk
+USER root
+
+# below RUN includes plugin as examples elasticsearch is not required
+# you may customize including plugins as you wish
+RUN apk add --no-cache --update --virtual .build-deps \
+        sudo build-base ruby-dev \
+ && sudo gem install fluent-plugin-kafka \
+ && sudo gem sources --clear-all \
+ && apk del .build-deps \
+ && rm -rf /tmp/* /var/tmp/* /usr/lib/ruby/gems/*/cache/*.gem
+
+# RUN apk add --no-cache netcat-openbsd
+
+# RUN apk --no-cache add ca-certificates wget
+# RUN wget --quiet --output-document=/etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
+# RUN wget https://github.com/sgerrand/alpine-pkg-kafkacat/releases/download/1.6.0-r0/kafkacat-1.6.0-r0.apk
+# RUN apk add --no-cache kafkacat-1.6.0-r0.apk
+
+USER fluent
+

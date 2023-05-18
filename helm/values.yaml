@@ -16,7 +16,4 @@ uvicorn:
   logLevel: debug
 fluentd:
   storage: 4Gi
-  outconf: |
-    <match post2log>
-      @type stdout
-    </match>
+  extraCfg: ""

@@ -51,7 +51,6 @@ async def postback(request: Request):
         data = json.loads(raw_data)
     except json.JSONDecodeError:
         return {"error": "Invalid JSON data - {}".format(raw_data)}
-    
     now = datetime.now(timezone.utc)
     post_ts = int(now.timestamp() * 1000)
     post_gmtdt = now.strftime('%Y-%m-%dT%H:%M:%SZ')

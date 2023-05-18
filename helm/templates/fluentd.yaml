@@ -11,34 +11,13 @@ data:
       tag post2log
       path_key filename
       read_from_head true
-      <parse>
-        @type regexp
-        expression /^(?<message>.*)$/
-      </parse>
-    </source>
-
-    <filter post2log>
-      @type parser
-      key_name message
-      reserve_data true 
-      remove_key_name_field true
+      refresh_interval 5
       <parse>
         @type json
       </parse>
-    </filter>
+    </source>
 
-    <filter post2log>
-      @type record_transformer
-      enable_ruby
-      remove_keys filename
-      <record>
-        _nodeName ${ENV['HOSTNAME']}
-        _workerPodHash ${record["filename"] =~ /post2log-(.+?)_.+\.txt/; $1}
-        _workerProcId ${record["filename"] =~ /post2log-.+?_(.+?)\.txt/; $1}
-      </record>
-    </filter>
-
-    {{ .Values.fluentd.outconf | indent 4 }}
+{{ .Values.fluentd.extraCfg | indent 4 }}
 ---
 apiVersion: apps/v1
 kind: DaemonSet
@@ -55,6 +34,8 @@ spec:
       labels:
         k8s-app: fluentd
     spec:
+      nodeSelector:
+        post2log/node-type: server
       initContainers:
       - name: chown-init
         image: busybox

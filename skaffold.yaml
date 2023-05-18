@@ -30,8 +30,5 @@ manifests:
         rotBackups: "{{ or .P2L_ROTBACKUPS 5 }}"
         uvicorn.logLevel: "{{ or .P2L_UVICORN_LOGLEVEL \"debug\" }}"
         fluentd.storage: "{{ or .P2L_FLUENTD_STORAGE \"4Gi\" }}"
-        fluentd.outconf: |
-          <match post2log>
-            @type stdout
-          </match>
+        fluentd.extraCfg: "{{ or .P2L_FLUENTD_EXTRACFG \"\" }}"
 
