@@ -10,13 +10,17 @@ data:
       pos_file /fluentd-out/post2log.pos
       tag post2log
       path_key filename
-      read_from_head true
+      read_from_head false
       refresh_interval 5
       <parse>
         @type json
       </parse>
     </source>
 
+    <filter post2log>
+      @type record_transformer
+      remove_keys filename
+    </filter>
 {{ .Values.fluentd.extraCfg | indent 4 }}
 ---
 apiVersion: apps/v1
