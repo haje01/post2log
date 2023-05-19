@@ -1,0 +1,19 @@
+{{- if .Values.ingressAnnotations }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: post2log
+  annotations:
+    {{ .Values.ingressAnnotations }}
+spec:
+  rules:
+  - http:
+      paths:
+        - path: {{ .Values.endpoint }}
+          pathType: Prefix
+          backend: 
+            service:
+              name: post2log
+              port: 
+                number: 80 
+{{- end }}

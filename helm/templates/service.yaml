@@ -1,0 +1,17 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: post2log
+spec:
+  {{- if .Values.nodePort }}
+  type: NodePort
+  {{- end }}
+  selector:
+    app: post2log
+  ports:
+  - port: {{ .Values.port }}
+    targetPort: 8000
+    {{- if .Values.nodePort }}
+    nodePort: {{ .Values.nodePort }}
+    {{- end }}
