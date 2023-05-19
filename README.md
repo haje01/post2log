@@ -4,14 +4,6 @@
 
 ## 설정
 
-먼저 쿠버네티스 클러스터내에서 post2log 를 배포할 노드들에 대해 다음과 같이 라벨을 설정한다.
-
-```
-kubectl label nodes post2log-1 post2log/node-type=server
-```
-
-> post2log 는 로그 수집을 위해 DaemonSet 을 통해 각 노드에 Fluentd 를 설치하는데, 클러스터내 다른 노드들에 설치되지 않도록 하기 위함이다.
-
 다음과 같은 환경변수를 이용해 설정할 수 있다:
 - `P2L_PORT` - 포스트백 서버 포트. 기본값 80
 - `P2L_ENDPOINT` - Postback 대상 엔드포인트. 기본값 `/postback`
