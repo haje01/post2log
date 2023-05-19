@@ -19,7 +19,16 @@ spec:
         volumeMounts:
         - name: fluentd-out-vol
           mountPath: /fluentd-out
-
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - post2log
+            topologyKey: "kubernetes.io/hostname"
       containers:
       # post2log server
       - name: post2log
