@@ -19,6 +19,10 @@ spec:
         volumeMounts:
         - name: fluentd-out-vol
           mountPath: /fluentd-out
+      {{- if .Values.nodeRole }}
+      nodeSelector:
+        post2log/node-role: {{ .Values.nodeRole }}
+      {{- end }}
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
