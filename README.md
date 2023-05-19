@@ -10,7 +10,7 @@
 kubectl label nodes post2log-1 post2log/node-type=server
 ```
 
-> post2log 는 로그 수집을 위해 DaemonSet 을 통해 각 노드에 Fluentd 를 설치하는데, 클러스터내 다른 노드들에 설치되지 않도록 하기 위함이다.
+> 이는 post2log 는 로그 수집을 위해 DaemonSet 을 통해 각 노드에 Fluentd 를 설치하는데, 클러스터내 다른 노드들에 설치되지 않도록 하기 위함이다.
 
 다음과 같은 환경변수를 이용해 설정할 수 있다:
 - `P2L_PORT` - 포스트백 서버 포트. 기본값 80
@@ -81,14 +81,32 @@ P2L_NODEPORT=30080 skaffold run --default-repo=<컨테이너 레포지토리>
 P2L_INGRESS_ANNOT="kubernetes.io/ingress.class: traefik" skaffold run --default-repo=<컨테이너 레포지토리>
 ```
 
+## InfluxDB 로 출력 
+
+`P2L_FLUENTD_EXTRACFG` 에 InfluxDB 플러그인 정보를 기술하면 수집된 로그를 카프카로 보낼 수 있다. 아래는 간단한 예이다.
+
+```
+export P2L_FLUENTD_EXTRACFG="<match 태그>
+  @type influxdb
+  host <InfluxDB IP>
+  port <InfluxDB Port>
+  dbname <DB 명>
+  username <유저명>
+  password <암호>
+  auto_tags true
+</match>"
+
+skaffold run --default-repo=<컨테이너 레포지토리>
+```
+
 ## Kafka 로 출력 
 
-`P2L_FLUENTD_EXTRACFG` 에 Kafka 플러그인 정보를 기술하면 로그를 카프카로 보낼 수 있다. 아래는 간단한 예이다.
+`P2L_FLUENTD_EXTRACFG` 에 Kafka 플러그인 정보를 기술하면 수집된 로그를 카프카로 보낼 수 있다. 아래는 간단한 예이다.
 
 ```
 export P2L_FLUENTD_EXTRACFG="<match 태그>
   @type kafka2
-  brokers <카프카 Service IP>:<카프카 Service Port>
+  brokers <카프카 IP>:<카프카 Port>
   use_event_time true
   topic_key mytopic
   default_topic mytopic
@@ -108,12 +126,13 @@ export P2L_FLUENTD_EXTRACFG="<match 태그>
   # get_kafka_client_log true
 </match>"
 
-skaffold dev --default-repo=<컨테이너 레포지토리>
+skaffold run --default-repo=<컨테이너 레포지토리>
 ```
 
 > Fluentd 카프카 플러그인은 Kafka 에서 메시지를 보낼 파티션 리더의 도메인 명을 얻어와 접속을 시도하기에, post2log 가 설치된 서버에서 도메인 이름으로 각 브로커에 접속할 수 없다면 다음과 같은 방식을 검토해야 한다:
 > - Fluentd 장비의 /etc/hosts 에 도메인 등록하기
 > - 쿠버네티스 환경의 경우 같은 클러스터내에 배포하기 
+
 
 ## 성능 최적화
 
