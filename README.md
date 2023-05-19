@@ -1,6 +1,6 @@
 # post2log
 
-외부 서버에서 HTTP Postback 호출 (POST 메소드) 을 받아 그 내용을 로그로 기록한 후 [Fluentd](https://www.fluentd.org/) 등을 통해 [외부의 다양한 대상](https://www.fluentd.org/plugins/all#input-output) 으로 포워딩한다.
+외부 서버에서 HTTP Postback 호출 (POST 메소드) 을 받으면, 그 내용을 로그로 기록한 후 [Fluentd](https://www.fluentd.org/) 등을 통해 [외부의 다양한 대상](https://www.fluentd.org/plugins/all#input-output) 으로 포워딩한다. post2log 는 쿠버네티스 환경에서 설치 및 이용한다.
 
 ## 설정
 
@@ -126,7 +126,7 @@ skaffold dev --default-repo=<컨테이너 레포지토리>
 
 성능을 위해 post2log 의 서버와 Fluentd 는 노드 당 하나씩만 존재해야 한다. 이를 위해 `podAntiAffinity` 가 설정되어 이미 post2log 파드가 있는 노드에는 배포되지 않는 것에 유의하자. 예를 들어 `P2L_REPLICAS` 의 값을 3 으로 했다면, 실제 쿠버네티스 클러스터의 워커 노드도 세 대가 필요하다.
 
-또한 post2log 레플라카를 특정 노드에만 배포하려면 `P2L_NODEROLE` 을 이용한다. 예를 들어 다음처럼 특정 노드에 `ingest` 라벨을 붙여주고, post2log 설치시 `P2L_NODEROLE=ingest` 를 지정하면 `ingest` 라벨이 있는 서버에만 배포된다.
+또한 post2log 레플리카를 특정 노드에만 배포하려면 `P2L_NODEROLE` 을 이용한다. 예를 들어 다음처럼 특정 노드에 `ingest` 라벨을 붙여주고, post2log 설치시 `P2L_NODEROLE=ingest` 를 지정하면 `ingest` 라벨이 있는 서버에만 배포된다.
 
 ```
 kubectl label nodes svr-01 svr-02 post2log/node-role=ingest
