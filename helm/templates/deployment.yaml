@@ -12,7 +12,16 @@ spec:
       labels:
         app: post2log
     spec:
+      initContainers:
+      - name: chown-init
+        image: busybox
+        command: ['sh', '-c', 'chown -R 100:101 /fluentd-out']
+        volumeMounts:
+        - name: fluentd-out-vol
+          mountPath: /fluentd-out
+
       containers:
+      # post2log server
       - name: post2log
         image: post2log
         command: ["uvicorn"]        
@@ -46,44 +55,34 @@ spec:
         volumeMounts:
         - name: post2log-vol
           mountPath: /data
+
+      # Fluentd
+      - name: fluentd
+        image: fluentd-kafka
+        env:
+        - name: FLUENTD_CONF
+          value: "fluentd.conf"
+        - name: HOSTNAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        volumeMounts:
+        - name: fluentd-cfg-vol
+          mountPath: /fluentd/etc
+        - name: post2log-vol
+          mountPath: /data
+          readOnly: true
+        - name: fluentd-out-vol
+          mountPath: /fluentd-out
+
       volumes:
       - name: post2log-vol
         persistentVolumeClaim:
           claimName: post2log-pvc
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: post2log
-spec:
-  {{- if .Values.nodePort }}
-  type: NodePort
-  {{- end }}
-  selector:
-    app: post2log
-  ports:
-  - port: {{ .Values.port }}
-    targetPort: 8000
-    {{- if .Values.nodePort }}
-    nodePort: {{ .Values.nodePort }}
-    {{- end }}
----
-{{- if .Values.ingressAnnotations }}
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: post2log
-  annotations:
-    {{ .Values.ingressAnnotations }}
-spec:
-  rules:
-  - http:
-      paths:
-        - path: {{ .Values.endpoint }}
-          pathType: Prefix
-          backend: 
-            service:
-              name: post2log
-              port: 
-                number: 80 
-{{- end }}
+      - name: fluentd-cfg-vol
+        configMap:
+          name: fluentd-cfg-cm
+      - name: fluentd-out-vol
+        persistentVolumeClaim:
+          claimName: fluentd-out-pvc
+

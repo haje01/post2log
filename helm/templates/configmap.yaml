@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluentd-cfg-cm
+data:
+  fluentd.conf: |
+    <source>
+      @type tail
+      path /data/post2log-*_*.txt
+      pos_file /fluentd-out/post2log.pos
+      tag post2log
+      path_key filename
+      read_from_head false
+      refresh_interval 5
+      <parse>
+        @type json
+      </parse>
+    </source>
+
+    <filter post2log>
+      @type record_transformer
+      remove_keys filename
+    </filter>
+
+    <match post2log>
+      @type stdout
+    </match>
+{{ .Values.fluentd.extraCfg | indent 4 }}
