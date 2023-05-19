@@ -1,16 +1,11 @@
 # post2log
 
-외부 서버에서 HTTP Postback 호출 (POST 메소드) 을 받아 그 내용을 로그로 기록한 후 [Fluentd](https://www.fluentd.org/) 등을 통해 [외부의 다양한 대상](https://www.fluentd.org/plugins/all#input-output) 으로 포워딩한다.
+외부 서버에서 HTTP Postback 호출 (POST 메소드) 을 받으면, 그 내용을 로그로 기록한 후 [Fluentd](https://www.fluentd.org/) 등을 통해 [외부의 다양한 대상](https://www.fluentd.org/plugins/all#input-output) 으로 포워딩한다. post2log 는 쿠버네티스 환경에서 설치 및 이용한다.
+
+post2log 는 자체 서버와 Fluentd 가 함께 같은 노드에 설치되어 동작한다. 내장된 Fluentd 컨테이너 이미지는 다음과 같은 플러그인이 미리 설치되어 있다.
+- `fluentd-plugin-kafka`
 
 ## 설정
-
-먼저 쿠버네티스 클러스터내에서 post2log 를 배포할 노드들에 대해 다음과 같이 라벨을 설정한다.
-
-```
-kubectl label nodes post2log-1 post2log/node-type=server
-```
-
-> 이는 post2log 는 로그 수집을 위해 DaemonSet 을 통해 각 노드에 Fluentd 를 설치하는데, 클러스터내 다른 노드들에 설치되지 않도록 하기 위함이다.
 
 다음과 같은 환경변수를 이용해 설정할 수 있다:
 - `P2L_PORT` - 포스트백 서버 포트. 기본값 80
@@ -26,6 +21,7 @@ kubectl label nodes post2log-1 post2log/node-type=server
 - `P2L_UVICORN_LOGLEVEL` - Uvicorn 로그 레벨. 기본값 `debug`
 - `P2L_FLUENTD_STORAGE` - Fluentd 용 스토리지 크기. 기본값 `4Gi`
 - `P2L_FLUENTD_EXTRACFG` - Fluentd 최종 출력 설정. 기본값 ""
+- `P2L_NODEROLE` - 지정된 역할의 노드에만 배포. 기본값 ""
 
 ## 로컬 클러스터
 
@@ -133,8 +129,18 @@ skaffold run --default-repo=<컨테이너 레포지토리>
 > - Fluentd 장비의 /etc/hosts 에 도메인 등록하기
 > - 쿠버네티스 환경의 경우 같은 클러스터내에 배포하기 
 
+## 최적화와 배포
 
-## 성능 최적화
+### 적절한 워커 수와 레플리카 지정
 
 기본적으로 HTTP 요청을 FastAPI 를 통해 비동기로 받은 뒤 파일에 저장하는 단순한 일이기에, 클러스터 노드를 추가하거나 `P2L_WORKERS` 나 `P2L_REPLICAS` 를 늘려주는 것으로 성능이 바로 향상되지 않을 수 있다. Fluentd 설정에 따른 다운스트림 작업의 경중에도 영향을 받을 것으로 생각되기에, 필요한 설정 후 최적화를 위한 다양한 실험이 필요할 것이다.
 
+### 배포
+
+성능을 위해 post2log 의 서버와 Fluentd 는 노드 당 하나씩만 존재해야 한다. 이를 위해 `podAntiAffinity` 가 설정되어 이미 post2log 파드가 있는 노드에는 배포되지 않는 것에 유의하자. 예를 들어 `P2L_REPLICAS` 의 값을 3 으로 했다면, 실제 쿠버네티스 클러스터의 워커 노드도 세 대가 필요하다.
+
+또한 post2log 레플리카를 특정 노드에만 배포하려면 `P2L_NODEROLE` 을 이용한다. 예를 들어 다음처럼 특정 노드에 `ingest` 라벨을 붙여주고, post2log 설치시 `P2L_NODEROLE=ingest` 를 지정하면 `ingest` 라벨이 있는 서버에만 배포된다.
+
+```
+kubectl label nodes svr-01 svr-02 post2log/node-role=ingest
+```

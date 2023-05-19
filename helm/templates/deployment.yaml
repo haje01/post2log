@@ -1,0 +1,101 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: post2log 
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: post2log
+  template:
+    metadata:
+      labels:
+        app: post2log
+    spec:
+      initContainers:
+      - name: chown-init
+        image: busybox
+        command: ['sh', '-c', 'chown -R 100:101 /fluentd-out']
+        volumeMounts:
+        - name: fluentd-out-vol
+          mountPath: /fluentd-out
+      {{- if .Values.nodeRole }}
+      nodeSelector:
+        post2log/node-role: {{ .Values.nodeRole }}
+      {{- end }}
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - post2log
+            topologyKey: "kubernetes.io/hostname"
+      containers:
+      # post2log server
+      - name: post2log
+        image: post2log
+        command: ["uvicorn"]        
+        args: [
+          "server:app", 
+          "--host", "0.0.0.0", "--port", "8000", 
+          "--workers", "{{ .Values.workers }}", 
+          "--log-level", "{{ .Values.uvicorn.logLevel }}"
+        ]
+        env:
+        - name: ENDPOINT
+          value: "{{ .Values.endpoint }}"
+        - name: LOG_QUERYPARAM
+          value: "{{ .Values.logQueryParam }}"
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: LOG_ROT_BYTES
+          value: "{{ .Values.rotBytes }}"
+        - name: LOG_ROT_BACKUPS
+          value: "{{ .Values.rotBackups }}"
+        ports:
+        - containerPort: 8000
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 5  
+        volumeMounts:
+        - name: post2log-vol
+          mountPath: /data
+
+      # Fluentd
+      - name: fluentd
+        image: fluentd-kafka
+        env:
+        - name: FLUENTD_CONF
+          value: "fluentd.conf"
+        - name: HOSTNAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        volumeMounts:
+        - name: fluentd-cfg-vol
+          mountPath: /fluentd/etc
+        - name: post2log-vol
+          mountPath: /data
+          readOnly: true
+        - name: fluentd-out-vol
+          mountPath: /fluentd-out
+
+      volumes:
+      - name: post2log-vol
+        persistentVolumeClaim:
+          claimName: post2log-pvc
+      - name: fluentd-cfg-vol
+        configMap:
+          name: fluentd-cfg-cm
+      - name: fluentd-out-vol
+        persistentVolumeClaim:
+          claimName: fluentd-out-pvc
+
