@@ -7,8 +7,8 @@ build:
   artifacts:
   - image: post2log
     context: server 
-  - image: fluentd-kafka
-    context: fluentd-kafka
+  - image: post2log-fluentd
+    context: fluentd
 
 manifests:
   helm:
