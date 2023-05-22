@@ -23,6 +23,14 @@ data:
     </filter>
 
     <match post2log>
-      @type stdout
+      @type rewrite_tag_filter
+      <rule>
+        key _path
+        pattern ^/postback/(.+)$
+        tag $1
+      </rule>
     </match>
 {{ .Values.fluentd.extraCfg | indent 4 }}
+    <match **>
+      @type stdout
+    </match>

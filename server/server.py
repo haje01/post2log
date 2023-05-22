@@ -15,6 +15,8 @@ LOG_QUERYPARAM = os.environ.get('LOG_QUERYPARAM', 'true')
 POD_NAME = os.environ.get('POD_NAME', 'NA')
 ENDPOINT = os.environ.get('ENDPOINT', '/postback')
 
+print(f"ENDPOINT: {ENDPOINT}")
+
 app = FastAPI()
 worker_id = os.getpid()
 log_queryparam = LOG_QUERYPARAM.lower() == 'true'

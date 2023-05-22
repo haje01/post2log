@@ -71,7 +71,7 @@ spec:
 
       # Fluentd
       - name: fluentd
-        image: fluentd-kafka
+        image: post2log-fluentd
         env:
         - name: FLUENTD_CONF
           value: "fluentd.conf"

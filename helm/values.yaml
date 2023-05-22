@@ -5,7 +5,7 @@ image:
 port: 80
 nodePort: ""
 nodeRole: ""
-endpoint: /postback
+endpoint: /postback/test
 logQueryParam: true
 ingressAnnotations: ""
 workers: 1

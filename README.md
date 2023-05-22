@@ -1,9 +1,10 @@
 # post2log
 
-외부 서버에서 HTTP Postback 호출 (POST 메소드) 을 받으면, 그 내용을 로그로 기록한 후 [Fluentd](https://www.fluentd.org/) 등을 통해 [외부의 다양한 대상](https://www.fluentd.org/plugins/all#input-output) 으로 포워딩한다. post2log 는 쿠버네티스 환경에서 설치 및 이용한다.
+외부 서버에서 HTTP Postback 호출 (POST 메소드) 을 받으면, 그 내용을 로그로 기록한 후 [Fluentd](https://www.fluentd.org/) 등을 통해 외부의 다양한 대상으로 포워딩할 수 있다. post2log 는 쿠버네티스 환경에서 설치 및 이용한다.
 
-post2log 는 자체 서버와 Fluentd 가 함께 같은 노드에 설치되어 동작한다. 내장된 Fluentd 컨테이너 이미지는 다음과 같은 플러그인이 미리 설치되어 있다.
+post2log 는 자체 서버와 Fluentd 가 함께 같은 노드에 설치되어 동작한다. 내장된 Fluentd 컨테이너 이미지는 일단 다음과 같은 플러그인이 미리 설치되어 있다.
 - `fluentd-plugin-kafka`
+- `fluentd-plugin-influxdb`
 
 ## 설정
 
@@ -15,13 +16,13 @@ post2log 는 자체 서버와 Fluentd 가 함께 같은 노드에 설치되어 �
 - `P2L_INGRESS_ANNOT` - Ingress 를 사용하는 경우 Annotations. 공백이면 사용 않음. 기본값 ""
 - `P2L_WORKERS` - 포스트백 서버 (FastAPI) 의 워커 수. 기본값 1
 - `P2L_REPLICAS` - 포스트백 서버의 레플리카(파드) 수. 기본값 1
+- `P2L_NODEROLE` - 지정된 역할의 노드에만 배포. 기본값 ""
 - `P2L_STORAGE` - 로그 저장 스토리지 크기. 기본값 `4Gi`
 - `P2L_ROTBYTES` - 로그 파일 로테이션 기준 바이트수. 기본값 10485760 (= 10Mi)
 - `P2L_ROTBACKUPS` - 로그 파일 로테이션 백업 수. 기본값 5
 - `P2L_UVICORN_LOGLEVEL` - Uvicorn 로그 레벨. 기본값 `debug`
 - `P2L_FLUENTD_STORAGE` - Fluentd 용 스토리지 크기. 기본값 `4Gi`
 - `P2L_FLUENTD_EXTRACFG` - Fluentd 최종 출력 설정. 기본값 ""
-- `P2L_NODEROLE` - 지정된 역할의 노드에만 배포. 기본값 ""
 
 ## 로컬 클러스터
 
@@ -82,30 +83,48 @@ P2L_INGRESS_ANNOT="kubernetes.io/ingress.class: traefik" skaffold run --default-
 `P2L_FLUENTD_EXTRACFG` 에 InfluxDB 플러그인 정보를 기술하면 수집된 로그를 카프카로 보낼 수 있다. 아래는 간단한 예이다.
 
 ```
-export P2L_FLUENTD_EXTRACFG="<match 태그>
+export P2L_ENDPOINT=/postback/test 
+export P2L_FLUENTD_EXTRACFG="<match test> 
   @type influxdb
   host <InfluxDB IP>
   port <InfluxDB Port>
-  dbname <DB 명>
-  username <유저명>
-  password <암호>
-  auto_tags true
-</match>"
+  dbname post2log
+  user <유저명>
+  password <유저암호>
+  time_precision ns
+  use_ssl false
+  <buffer>
+    @type memory
+    chunk_limit_size 1m
+    flush_mode interval
+    flush_interval 10
+  </buffer>
+</match>
+
+<system>
+  log_level info
+</system>
+" 
+skaffold run --default-repo=docker.io/haje01
 
 skaffold run --default-repo=<컨테이너 레포지토리>
 ```
+
+위와 같이 하면, 엔드포인트 `/postback/test` 호출의 내용을 InfluxDB 의 `post2log` 데이터베이스 아래 `test` 메저먼트 (Measurement)로 저장하게 된다. 
+
+> InfluxDB 에 `post2log` 데이터베이스는 미리 만들어 두어야 한다.
 
 ## Kafka 로 출력 
 
 `P2L_FLUENTD_EXTRACFG` 에 Kafka 플러그인 정보를 기술하면 수집된 로그를 카프카로 보낼 수 있다. 아래는 간단한 예이다.
 
 ```
+export P2L_ENDPOINT=/postback/test 
 export P2L_FLUENTD_EXTRACFG="<match 태그>
   @type kafka2
   brokers <카프카 IP>:<카프카 Port>
   use_event_time true
-  topic_key mytopic
-  default_topic mytopic
+  default_topic test
   
   <format>
     @type json
@@ -121,6 +140,10 @@ export P2L_FLUENTD_EXTRACFG="<match 태그>
   # @log_level trace
   # get_kafka_client_log true
 </match>"
+
+<system>
+  log_level info
+</system>
 
 skaffold run --default-repo=<컨테이너 레포지토리>
 ```
