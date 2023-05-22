@@ -78,42 +78,6 @@ P2L_NODEPORT=30080 skaffold run --default-repo=<컨테이너 레포지토리>
 P2L_INGRESS_ANNOT="kubernetes.io/ingress.class: traefik" skaffold run --default-repo=<컨테이너 레포지토리>
 ```
 
-## InfluxDB 로 출력 
-
-`P2L_FLUENTD_EXTRACFG` 에 InfluxDB 플러그인 정보를 기술하면 수집된 로그를 카프카로 보낼 수 있다. 아래는 간단한 예이다.
-
-```
-export P2L_ENDPOINT=/postback/test 
-export P2L_FLUENTD_EXTRACFG="<match test> 
-  @type influxdb
-  host <InfluxDB IP>
-  port <InfluxDB Port>
-  dbname post2log
-  user <유저명>
-  password <유저암호>
-  time_precision ns
-  use_ssl false
-  <buffer>
-    @type memory
-    chunk_limit_size 1m
-    flush_mode interval
-    flush_interval 10
-  </buffer>
-</match>
-
-<system>
-  log_level info
-</system>
-" 
-skaffold run --default-repo=docker.io/haje01
-
-skaffold run --default-repo=<컨테이너 레포지토리>
-```
-
-위와 같이 하면, 엔드포인트 `/postback/test` 호출의 내용을 InfluxDB 의 `post2log` 데이터베이스 아래 `test` 메저먼트 (Measurement)로 저장하게 된다. 
-
-> InfluxDB 에 `post2log` 데이터베이스는 미리 만들어 두어야 한다.
-
 ## Kafka 로 출력 
 
 `P2L_FLUENTD_EXTRACFG` 에 Kafka 플러그인 정보를 기술하면 수집된 로그를 카프카로 보낼 수 있다. 아래는 간단한 예이다.
@@ -151,6 +115,43 @@ skaffold run --default-repo=<컨테이너 레포지토리>
 > Fluentd 카프카 플러그인은 Kafka 에서 메시지를 보낼 파티션 리더의 도메인 명을 얻어와 접속을 시도하기에, post2log 가 설치된 서버에서 도메인 이름으로 각 브로커에 접속할 수 없다면 다음과 같은 방식을 검토해야 한다:
 > - Fluentd 장비의 /etc/hosts 에 도메인 등록하기
 > - 쿠버네티스 환경의 경우 같은 클러스터내에 배포하기 
+
+## InfluxDB 로 출력 
+
+`P2L_FLUENTD_EXTRACFG` 에 InfluxDB 플러그인 정보를 기술하면 수집된 로그를 카프카로 보낼 수 있다. 아래는 간단한 예이다.
+
+```
+export P2L_ENDPOINT=/postback/test 
+export P2L_FLUENTD_EXTRACFG="<match test> 
+  @type influxdb
+  host <InfluxDB IP>
+  port <InfluxDB Port>
+  dbname post2log
+  user <유저명>
+  password <유저암호>
+  time_precision ns
+  use_ssl false
+  <buffer>
+    @type memory
+    chunk_limit_size 1m
+    flush_mode interval
+    flush_interval 10
+  </buffer>
+</match>
+
+<system>
+  log_level info
+</system>
+" 
+skaffold run --default-repo=docker.io/haje01
+
+skaffold run --default-repo=<컨테이너 레포지토리>
+```
+
+위와 같이 하면, 엔드포인트 `/postback/test` 호출의 내용을 InfluxDB 의 `post2log` 데이터베이스 아래 `test` 메저먼트 (Measurement) 로 저장하게 된다. 
+
+> InfluxDB 에 `post2log` 데이터베이스는 미리 만들어 두어야 한다.
+
 
 ## 최적화와 배포
 
