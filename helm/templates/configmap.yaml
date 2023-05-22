@@ -17,6 +17,11 @@ data:
       </parse>
     </source>
 
+    <filter post2log>
+      @type record_transformer
+      remove_keys filename
+    </filter>
+
     <match post2log>
       @type rewrite_tag_filter
       <rule>
