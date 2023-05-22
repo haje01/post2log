@@ -49,6 +49,8 @@ spec:
           value: "{{ .Values.endpoint }}"
         - name: LOG_QUERYPARAM
           value: "{{ .Values.logQueryParam }}"
+        - name: SKIP_NULL_FIELDS
+          value: "{{ .Values.skipNullFields }}"
         - name: POD_NAME
           valueFrom:
             fieldRef:

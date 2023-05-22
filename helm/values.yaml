@@ -7,6 +7,7 @@ nodePort: ""
 nodeRole: ""
 endpoint: /postback/test
 logQueryParam: true
+skipNullFields: true
 ingressAnnotations: ""
 workers: 1
 replicas: 1

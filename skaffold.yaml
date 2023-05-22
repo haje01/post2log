@@ -23,6 +23,7 @@ manifests:
         nodeRole: "{{ or .P2L_NODEROLE \"\" }}"
         endpoint: "{{ or .P2L_ENDPOINT \"/postback\" }}"
         logQueryParam: "{{ or .P2L_LOG_QUERYPARAM \"true\" }}"
+        skipNullFields: "{{ or .P2L_SKIP_NULLFLDS \"true\" }}"
         ingressAnnotations: "{{ or .P2L_INGRESS_ANNOT \"\" }}"
         workers: "{{ or .P2L_WORKERS 1 }}"
         replicas: "{{ or .P2L_REPLICAS 1 }}"

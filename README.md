@@ -12,6 +12,7 @@ post2log 는 자체 서버와 Fluentd 가 함께 같은 노드에 설치되어 �
 - `P2L_PORT` - 포스트백 서버 포트. 기본값 80
 - `P2L_ENDPOINT` - Postback 대상 엔드포인트. 기본값 `/postback`
 - `P2L_LOG_QUERYPARAM` - HTTP 쿼리 매개변수 로깅 여부. 기본값 `true`
+- `P2L_SKIP_NULLFLDS` - 값이 Null 인 필드 제외 여부. 기본값 `true`
 - `P2L_NODEPORT` - 노드포트 이용시 포트. 공백이면 사용 않음. 기본값 ""
 - `P2L_INGRESS_ANNOT` - Ingress 를 사용하는 경우 Annotations. 공백이면 사용 않음. 기본값 ""
 - `P2L_WORKERS` - 포스트백 서버 (FastAPI) 의 워커 수. 기본값 1

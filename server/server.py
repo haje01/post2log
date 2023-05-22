@@ -11,7 +11,8 @@ from fastapi import FastAPI, Request
 LOG_FORMAT = '%(message)s'
 LOG_ROT_BYTES = int(os.environ.get('LOG_ROT_BYTES', 1024 * 1024))
 LOG_ROT_BACKUPS = int(os.environ.get('LOG_ROT_BACKUPS', 5))
-LOG_QUERYPARAM = os.environ.get('LOG_QUERYPARAM', 'true')
+LOG_QUERYPARAM = os.environ.get('LOG_QUERYPARAM', 'true').lower() == 'true'
+SKIP_NULL_FIELDS = os.environ.get('SKIP_NULL_FIELDS', 'true').lower() == 'true'
 POD_NAME = os.environ.get('POD_NAME', 'NA')
 ENDPOINT = os.environ.get('ENDPOINT', '/postback')
 
@@ -19,7 +20,6 @@ print(f"ENDPOINT: {ENDPOINT}")
 
 app = FastAPI()
 worker_id = os.getpid()
-log_queryparam = LOG_QUERYPARAM.lower() == 'true'
 
 
 def create_logger(worker_id: int):
@@ -45,7 +45,7 @@ def health():
 
 @app.post(ENDPOINT)
 async def postback(request: Request):
-    if log_queryparam:
+    if LOG_QUERYPARAM:
         params = dict(request.query_params)
 
     raw_data = await request.body()
@@ -53,10 +53,12 @@ async def postback(request: Request):
         data = json.loads(raw_data)
     except json.JSONDecodeError:
         return {"error": "Invalid JSON data - {}".format(raw_data)}
+    if SKIP_NULL_FIELDS:
+        data = {k: v for k, v in data.items() if v is not None}
     now = datetime.now(timezone.utc)
     post_ts = int(now.timestamp() * 1000)
     post_gmtdt = now.strftime('%Y-%m-%dT%H:%M:%SZ')
-    content = params if log_queryparam else {}
+    content = params if LOG_QUERYPARAM else {}
     content.update(data)
     content.update({
         '_path': ENDPOINT,
