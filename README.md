@@ -83,8 +83,8 @@ P2L_INGRESS_ANNOT="kubernetes.io/ingress.class: traefik" skaffold run --default-
 `P2L_FLUENTD_EXTRACFG` 에 Kafka 플러그인 정보를 기술하면 수집된 로그를 카프카로 보낼 수 있다. 아래는 간단한 예이다.
 
 ```
-export P2L_ENDPOINT=/postback/test 
-export P2L_FLUENTD_EXTRACFG="<match 태그>
+P2L_ENDPOINT=/postback/test \
+P2L_FLUENTD_EXTRACFG="<match 태그> 
   @type kafka2
   brokers <카프카 IP>:<카프카 Port>
   use_event_time true
@@ -108,7 +108,7 @@ export P2L_FLUENTD_EXTRACFG="<match 태그>
 <system>
   log_level info
 </system>
-
+" \
 skaffold run --default-repo=<컨테이너 레포지토리>
 ```
 
@@ -121,8 +121,8 @@ skaffold run --default-repo=<컨테이너 레포지토리>
 `P2L_FLUENTD_EXTRACFG` 에 InfluxDB 플러그인 정보를 기술하면 수집된 로그를 카프카로 보낼 수 있다. 아래는 간단한 예이다.
 
 ```
-export P2L_ENDPOINT=/postback/test 
-export P2L_FLUENTD_EXTRACFG="<match test> 
+P2L_ENDPOINT=/postback/test \
+P2L_FLUENTD_EXTRACFG="<match test> 
   @type influxdb
   host <InfluxDB IP>
   port <InfluxDB Port>
@@ -142,9 +142,7 @@ export P2L_FLUENTD_EXTRACFG="<match test>
 <system>
   log_level info
 </system>
-" 
-skaffold run --default-repo=docker.io/haje01
-
+" \
 skaffold run --default-repo=<컨테이너 레포지토리>
 ```
 
