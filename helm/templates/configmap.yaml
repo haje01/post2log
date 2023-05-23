@@ -6,7 +6,7 @@ data:
   fluentd.conf: |
     <source>
       @type tail
-      path /data/post2log-*_*.txt
+      path /data/*post2log-*_*.txt
       pos_file /fluentd-out/post2log.pos
       tag post2log
       path_key filename
