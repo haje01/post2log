@@ -5,7 +5,7 @@ description: HTTP Postback 이벤트를 Fluentd 로 전달하는 post2log 차트
 type: application
 
 # 차트 버전
-version: 0.0.5
+version: 0.0.6
 
 # 앱 버전
 appVersion: "0.0.1"
