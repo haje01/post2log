@@ -3,6 +3,8 @@ post2log:
   image: docker.io/haje01/post2log:latest
 fluentd:
   image: docker.io/haje01/post2log_fluentd:latest
+  storage: 4Gi
+  extraCfg: ""
 port: 80
 nodePort: ""
 nodeRole: ""
@@ -17,6 +19,3 @@ rotBytes: 10485760
 rotBackups: 5
 uvicorn:
   logLevel: debug
-fluentd:
-  storage: 4Gi
-  extraCfg: ""
