@@ -151,6 +151,7 @@ skaffold run --default-repo=<컨테이너 레포지토리>
 
 > InfluxDB 에 `post2log` 데이터베이스는 미리 만들어 두어야 한다.
 
+InfluxDB 는 null 값을 직접 지원하지 않기에, null 값이 있는 레코드는 생략되게 된다. 이를 방지하기 위해서는 `P2L_SKIP_NULLFLDS=true` (기본값) 이 필요하다.
 
 ## 최적화와 배포
 
