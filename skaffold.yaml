@@ -13,7 +13,7 @@ build:
 manifests:
   helm:
     releases:
-    - name: post2log
+    - name: myp
       chartPath: helm
       setValueTemplates:
         post2log.image: "{{ .IMAGE_FULLY_QUALIFIED_post2log }}"

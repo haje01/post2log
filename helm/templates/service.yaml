@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: post2log
+  name: {{ include "tmp.fullname" . }}
 spec:
   {{- if .Values.nodePort }}
   type: NodePort
