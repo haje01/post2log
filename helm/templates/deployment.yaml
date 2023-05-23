@@ -17,7 +17,7 @@ spec:
         image: busybox
         command: ['sh', '-c', 'chown -R 100:101 /fluentd-out']
         volumeMounts:
-        - name: fluentd-out-vol
+        - name: fluentd-out
           mountPath: /fluentd-out
       {{- if .Values.nodeRole }}
       nodeSelector:
@@ -87,17 +87,17 @@ spec:
         - name: post2log-vol
           mountPath: /data
           readOnly: true
-        - name: fluentd-out-vol
+        - name: fluentd-out
           mountPath: /fluentd-out
 
       volumes:
       - name: post2log-vol
         persistentVolumeClaim:
-          claimName: {{ include "tmp.fullname" . }}-pvc
+          claimName: {{ include "tmp.fullname" . }}
       - name: fluentd-cfg-vol
         configMap:
-          name: {{ include "tmp.fullname" . }}-fluentd-cfg-cm
-      - name: fluentd-out-vol
+          name: {{ include "tmp.fullname" . }}-fluentd-cfg
+      - name: fluentd-out
         persistentVolumeClaim:
-          claimName: {{ include "tmp.fullname" . }}-fluentd-out-pvc
+          claimName: {{ include "tmp.fullname" . }}-fluentd-out
 
