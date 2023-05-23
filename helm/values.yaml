@@ -1,7 +1,8 @@
 # Helm 차트 디버깅을 위한 기본값
-image: 
-  repository: docker.io/haje01/post2log
-  tag: latest
+post2log:
+  image: docker.io/haje01/post2log:latest
+fluentd:
+  image: docker.io/haje01/post2log_fluentd:latest
 port: 80
 nodePort: ""
 nodeRole: ""

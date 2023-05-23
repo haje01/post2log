@@ -36,7 +36,7 @@ spec:
       containers:
       # post2log server
       - name: post2log
-        image: post2log
+        image: {{ .Values.post2log.image }}
         command: ["uvicorn"]        
         args: [
           "server:app", 
@@ -73,7 +73,7 @@ spec:
 
       # Fluentd
       - name: fluentd
-        image: post2log-fluentd
+        image: {{ .Values.fluentd.image }}
         env:
         - name: FLUENTD_CONF
           value: "fluentd.conf"
