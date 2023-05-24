@@ -30,6 +30,7 @@ data:
         tag $1
       </rule>
     </match>
+    
 {{ include "util.tplvalues.render" (dict "value" .Values.fluentd.extraCfg "context" $) | indent 4 }}
     <match **>
       @type stdout
