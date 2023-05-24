@@ -13,7 +13,7 @@ spec:
           pathType: Prefix
           backend: 
             service:
-              name: post2log
+              name: {{ include "util.fullname" . }}
               port: 
                 number: 80 
 {{- end }}
