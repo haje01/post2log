@@ -62,8 +62,8 @@ async def postback(request: Request):
     content.update(data)
     content.update({
         '_path': ENDPOINT,
-        '_postTimestamp': post_ts, 
-        '_postDatetimeGMT': post_gmtdt,
+        '_timestamp': post_ts, 
+        '_datetimeGMT': post_gmtdt,
         }
     )
     logger.info(json.dumps(content))
