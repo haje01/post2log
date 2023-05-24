@@ -54,15 +54,15 @@ curl -X POST "localhost:8080/postback?p1=v1&p2=v2"
 `stdout` 출력의 경우 `kubectl logs` 명령으로 Fluentd 파드의 로그를 보면 결과를 확인할 수 있다. 예를들어 아래와 같은 식으로 남는다.
 
 ```
-2023-04-28 09:57:43.291989606 +0000 post2log: {"p1":"v1","p2":"v2","_path":"/postback","_postTimestamp":1682675862705,"_postDatetimeGMT":"2023-04-28T09:57:42Z","_nodeName":"minikube","_workerPodHash":"7bcd9d6cdf-7jmsd","_workerProcId":"1"}
+2023-04-28 09:57:43.291989606 +0000 post2log: {"p1":"v1","p2":"v2","_path":"/postback","_timestamp":1682675862705,"_dateTimeGMT":"2023-04-28T09:57:42Z","_nodeName":"minikube","_workerPodHash":"7bcd9d6cdf-7jmsd","_workerProcId":"1"}
 ```
 
 언더바 `_` 가 붙은 필드는 쿼리 인자값이 아닌 post2log 에서 생성한 필드로 다음과 같은 것들이 있다:
-- `_path` - 엔드포인드 경로
-- `_postTimestamp` - POST 타임스탬프
-- `_postDateTimeGMT` - UTC 기준 일시
-- `_workerPodHash` - 서버가 위치한 파드의 해쉬 
-- `_workerProcId` - 서버 프로세스 ID
+- `_path` - 호출의 엔드포인드 경로
+- `_timestamp` - 호출의 타임스탬프
+- `_dateTimeGMT` - 호출의 UTC 기준 일시
+- `_workerPodHash` - post2log 서버가 위치한 파드의 해쉬 
+- `_workerProcId` - post2log 서버 프로세스 ID
 
 
 ## 외부 설치형 클러스터
