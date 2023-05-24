@@ -17,7 +17,7 @@ post2log 는 자체 서버와 Fluentd 가 함께 같은 노드에 설치되어 �
 - `P2L_INGRESS_ANNOT` - Ingress 를 사용하는 경우 Annotations. 공백이면 사용 않음. 기본값 ""
 - `P2L_WORKERS` - 포스트백 서버 (FastAPI) 의 워커 수. 기본값 1
 - `P2L_REPLICAS` - 포스트백 서버의 레플리카(파드) 수. 기본값 1
-- `P2L_NODE_ROLE` - 지정된 역할의 노드에만 배포. 기본값 ""
+- `P2L_NODE_SELECTOR` - 배포 대상 노드 셀렉터. 기본값 ""
 - `P2L_STORAGE` - 로그 저장 스토리지 크기. 기본값 `4Gi`
 - `P2L_ROTBYTES` - 로그 파일 로테이션 기준 바이트수. 기본값 10485760 (= 10Mi)
 - `P2L_ROTBACKUPS` - 로그 파일 로테이션 백업 수. 기본값 5
@@ -121,7 +121,7 @@ skaffold run --default-repo=<컨테이너 레포지토리>
 
 `P2L_FLUENTD_EXTRACFG` 에 InfluxDB 플러그인 정보를 기술하면 수집된 로그를 카프카로 보낼 수 있다. 아래는 간단한 예이다.
 
-```
+```bash
 P2L_ENDPOINT=/postback/test \
 P2L_FLUENTD_EXTRACFG="<match test> 
   @type influxdb
@@ -163,8 +163,18 @@ InfluxDB 는 null 값을 직접 지원하지 않기에, null 값이 있는 레�
 
 성능을 위해 post2log 의 서버와 Fluentd 는 노드 당 하나씩만 존재해야 한다. 이를 위해 `podAntiAffinity` 가 설정되어 이미 post2log 파드가 있는 노드에는 배포되지 않는 것에 유의하자. 예를 들어 `P2L_REPLICAS` 의 값을 3 으로 했다면, 실제 쿠버네티스 클러스터의 워커 노드도 세 대가 필요하다.
 
-또한 post2log 레플리카를 특정 노드에만 배포하려면 `P2L_NODE_ROLE` 을 이용한다. 예를 들어 다음처럼 특정 노드에 `ingest` 라벨을 붙여주고, post2log 설치시 `P2L_NODE_ROLE=ingest` 를 지정하면 `ingest` 라벨이 있는 서버에만 배포된다.
+### 대상 노드 선택
 
+클러스터에 다양한 노드가 있는 경우, post2log 레플리카를 특정 노드에만 배포하려면 `P2L_NODE_SELECTOR` 을 이용한다. 예를 들어 다음처럼 특정 노드에 `noderole=ingest` 라벨을 붙여주고, 
+
+```bash
+kubectl label nodes svr-01 svr-02 noderole=ingest
 ```
-kubectl label nodes svr-01 svr-02 post2log/node-role=ingest
+post2log 설치시 `P2L_NODE_SELECTOR` 에 같은 값을 지정하면 `ingest` 라벨이 있는 노드에만 배포된다.
+
+```bash
+P2L_NODE_SELECTOR="
+noderole: ingest
+" \
+skaffold run --default-repo=<컨테이너 레포지토리>
 ```

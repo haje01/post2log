@@ -20,7 +20,7 @@ manifests:
         fluentd.image: "{{ .IMAGE_FULLY_QUALIFIED_post2log_fluentd }}"
         port: "{{ or .P2L_PORT 80 }}"
         nodePort: "{{ or .P2L_NODEPORT \"\" }}"
-        nodeRole: "{{ or .P2L_NODE_ROLE \"\" }}"
+        nodeSelector: "{{ or .P2L_NODE_SELECTOR \"\" }}"
         endpoint: "{{ or .P2L_ENDPOINT \"/postback\" }}"
         logQueryParam: "{{ or .P2L_LOG_QUERYPARAM \"true\" }}"
         skipNullFields: "{{ or .P2L_SKIP_NULLFLDS \"true\" }}"
