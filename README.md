@@ -58,7 +58,7 @@ curl -X POST "localhost:8080/postback?p1=v1&p2=v2"
 ```
 
 언더바 `_` 가 붙은 필드는 쿼리 인자값이 아닌 post2log 에서 생성한 필드로 다음과 같은 것들이 있다:
-- `_endpoint` - 호출의 엔드포인드
+- `_path` - 엔드포인드 경로
 - `_postTimestamp` - POST 타임스탬프
 - `_postDateTimeGMT` - UTC 기준 일시
 - `_workerPodHash` - 서버가 위치한 파드의 해쉬 
