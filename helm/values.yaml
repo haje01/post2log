@@ -4,7 +4,12 @@ post2log:
 fluentd:
   image: docker.io/haje01/post2log_fluentd:latest
   storage: 4Gi
-  extraCfg: ""
+  extraCfg: |
+    <match test>
+      # Helm 변수 참조 테스트
+      # Release Name : {{ .Release.Name }}
+      @type stdout
+    </match>"
 port: 80
 nodePort: ""
 nodeRole: ""

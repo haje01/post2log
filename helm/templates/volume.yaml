@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: {{ include "tmp.fullname" . }}
+  name: {{ include "util.fullname" . }}
 spec:
   capacity:
     storage: {{ .Values.storage }}
@@ -16,7 +16,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ include "tmp.fullname" . }}
+  name: {{ include "util.fullname" . }}
 spec:
   accessModes:
     - ReadWriteOnce
@@ -28,7 +28,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: {{ include "tmp.fullname" . }}-fluentd-out
+  name: {{ include "util.fullname" . }}-fluentd-out
 spec:
   capacity:
     storage: {{ .Values.fluentd.storage }}
@@ -43,7 +43,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ include "tmp.fullname" . }}-fluentd-out
+  name: {{ include "util.fullname" . }}-fluentd-out
 spec:
   accessModes:
     - ReadWriteOnce

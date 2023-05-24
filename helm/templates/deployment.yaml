@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "tmp.fullname" . }}
+  name: {{ include "util.fullname" . }}
 spec:
   replicas: {{ .Values.replicas }}
   selector:
@@ -93,11 +93,11 @@ spec:
       volumes:
       - name: post2log-vol
         persistentVolumeClaim:
-          claimName: {{ include "tmp.fullname" . }}
+          claimName: {{ include "util.fullname" . }}
       - name: fluentd-cfg-vol
         configMap:
-          name: {{ include "tmp.fullname" . }}-fluentd-cfg
+          name: {{ include "util.fullname" . }}-fluentd-cfg
       - name: fluentd-out
         persistentVolumeClaim:
-          claimName: {{ include "tmp.fullname" . }}-fluentd-out
+          claimName: {{ include "util.fullname" . }}-fluentd-out
 
