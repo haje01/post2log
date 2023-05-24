@@ -2,7 +2,7 @@
 
 외부 서버에서 HTTP Postback 호출 (POST 메소드) 을 받으면, 그 내용을 로그로 기록한 후 [Fluentd](https://www.fluentd.org/) 등을 통해 외부의 다양한 대상으로 포워딩할 수 있다. post2log 는 쿠버네티스 환경에서 설치 및 이용한다.
 
-post2log 는 자체 서버와 Fluentd 가 함께 같은 노드에 설치되어 동작한다. 내장된 Fluentd 컨테이너 이미지는 일단 다음과 같은 플러그인이 미리 설치되어 있다.
+post2log 는 자체 서버와 Fluentd 가 같은 노드에 설치되어 함께 동작한다. 내장된 Fluentd 컨테이너 이미지는 다음과 같은 플러그인이 미리 설치되어 있다.
 - `fluentd-plugin-kafka`
 - `fluentd-plugin-influxdb`
 
