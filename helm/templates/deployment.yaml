@@ -21,7 +21,11 @@ spec:
           mountPath: /fluentd-out
       {{- if .Values.nodeSelector }}
       nodeSelector:
+        {{- if typeIs "string" .Values.nodeSelector }}
         {{- .Values.nodeSelector | nindent 8 }}
+        {{- else }}
+          {{- .Values.nodeSelector | toYaml | nindent 8 }}
+        {{- end }}
       {{- end }}
       affinity:
         podAntiAffinity:
