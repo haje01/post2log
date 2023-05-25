@@ -12,7 +12,7 @@ fluentd:
     </match>"
 port: 80
 nodePort: ""
-nodeSelector: ""
+nodeSelector: {}
 endpoint: /postback/test
 logQueryParam: true
 skipNullFields: true
