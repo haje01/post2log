@@ -16,21 +16,23 @@ manifests:
     - name: myp
       chartPath: helm
       setValueTemplates:
-        post2log.image: "{{ .IMAGE_FULLY_QUALIFIED_post2log }}"
-        fluentd.image: "{{ .IMAGE_FULLY_QUALIFIED_post2log_fluentd }}"
-        port: "{{ or .P2L_PORT 80 }}"
-        nodePort: "{{ or .P2L_NODEPORT \"\" }}"
-        nodeSelector: "{{ or .P2L_NODE_SELECTOR \"\" }}"
-        endpoint: "{{ or .P2L_ENDPOINT \"/postback\" }}"
-        logQueryParam: "{{ or .P2L_LOG_QUERYPARAM \"true\" }}"
-        skipNullFields: "{{ or .P2L_SKIP_NULLFLDS \"true\" }}"
-        ingressAnnotations: "{{ or .P2L_INGRESS_ANNOT \"\" }}"
-        workers: "{{ or .P2L_WORKERS 1 }}"
-        replicas: "{{ or .P2L_REPLICAS 1 }}"
-        storage: "{{ or .P2L_STORAGE \"4Gi\" }}"
-        rotBytes: "{{ or .P2L_ROTBYTES \"10485760\" }}"
-        rotBackups: "{{ or .P2L_ROTBACKUPS 5 }}"
-        uvicorn.logLevel: "{{ or .P2L_UVICORN_LOGLEVEL \"debug\" }}"
-        fluentd.storage: "{{ or .P2L_FLUENTD_STORAGE \"4Gi\" }}"
-        fluentd.extraCfg: "{{ or .P2L_FLUENTD_EXTRACFG \"\" }}"
+        post2log.image: '{{ .IMAGE_FULLY_QUALIFIED_post2log }}'
+        fluentd.image: '{{ .IMAGE_FULLY_QUALIFIED_post2log_fluentd }}'
+        port: '{{ or .P2L_PORT 80 }}'
+        nodePort: '{{ or .P2L_NODEPORT "" }}'
+        nodeSelector: '{{ or .P2L_NODE_SELECTOR "" }}'
+        endpoint: '{{ or .P2L_ENDPOINT "/postback" }}'
+        logQueryParam: '{{ or .P2L_LOG_QUERYPARAM true }}'
+        skipNullFields: '{{ or .P2L_SKIP_NULLFLDS true }}'
+        ingress.enabled: '{{ or .P2L_INGRESS_ENABLED true }}'
+        ingress.hostname: '{{ or .P2L_INGRESS_HOST "" }}'
+        ingress.annotations: '{{ or .P2L_INGRESS_ANNOT "" }}'
+        workers: '{{ or .P2L_WORKERS 1 }}'
+        replicas: '{{ or .P2L_REPLICAS 1 }}'
+        storage: '{{ or .P2L_STORAGE "4Gi" }}'
+        rotBytes: '{{ or .P2L_ROTBYTES "10485760" }}'
+        rotBackups: '{{ or .P2L_ROTBACKUPS 5 }}'
+        uvicorn.logLevel: '{{ or .P2L_UVICORN_LOGLEVEL "debug" }}'
+        fluentd.storage: '{{ or .P2L_FLUENTD_STORAGE "4Gi" }}'
+        fluentd.extraCfg: '{{ or .P2L_FLUENTD_EXTRACFG "" }}'
 

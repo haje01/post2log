@@ -14,7 +14,9 @@ post2log 는 자체 서버와 Fluentd 가 같은 노드에 설치되어 함께 �
 - `P2L_LOG_QUERYPARAM` - HTTP 쿼리 매개변수 로깅 여부. 기본값 `true`
 - `P2L_SKIP_NULLFLDS` - 값이 Null 인 필드 제외 여부. 기본값 `true`
 - `P2L_NODEPORT` - 노드포트 이용시 포트. 공백이면 사용 않음. 기본값 ""
-- `P2L_INGRESS_ANNOT` - Ingress 를 사용하는 경우 Annotations. 공백이면 사용 않음. 기본값 ""
+- `P2L_INGRESS_ENABLED` - 자체 Ingress 사용 여부. 기본값 `false`
+- `P2L_INGRESS_HOSTNAME` - Ingress 를 사용하는 경우 호스트명. 기본값 ""
+- `P2L_INGRESS_ANNOT` - Ingress 를 사용하는 경우 Annotations. 기본값 ""
 - `P2L_WORKERS` - 포스트백 서버 (FastAPI) 의 워커 수. 기본값 1
 - `P2L_REPLICAS` - 포스트백 서버의 레플리카(파드) 수. 기본값 1
 - `P2L_NODE_SELECTOR` - 배포 대상 노드 셀렉터. 기본값 ""
@@ -76,7 +78,9 @@ P2L_NODEPORT=30080 skaffold run --default-repo=<컨테이너 레포지토리>
 쿠버네티스 배포판에 맞는 Ingress 의 Annotation 을 설정해 Ingress 를 이용할 수도 있다. 다음은 K3s 에서 기본 인그레스 컨트롤러인 Traefik 을 이용하는 예이다.
 
 ```bash
-P2L_INGRESS_ANNOT="kubernetes.io/ingress.class: traefik" skaffold run --default-repo=<컨테이너 레포지토리>
+P2L_INGRESS_ENABLED=true \
+P2L_INGRESS_ANNOT="kubernetes.io/ingress.class: traefik" \
+skaffold run --default-repo=<컨테이너 레포지토리>
 ```
 
 ## Kafka 로 출력 

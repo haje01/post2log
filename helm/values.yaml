@@ -16,7 +16,10 @@ nodeSelector: {}
 endpoint: /postback/test
 logQueryParam: true
 skipNullFields: true
-ingressAnnotations: ""
+ingress:
+  enabled: false
+  hostname: ""
+  annotations: {}
 workers: 1
 replicas: 1
 storage: 4Gi
