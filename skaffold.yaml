@@ -10,7 +10,7 @@ build:
   - image: post2log-fluentd
     context: fluentd
 
-manifests:
+deploy:
   helm:
     releases:
     - name: myp
