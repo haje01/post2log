@@ -27,6 +27,7 @@ spec:
           {{- .Values.nodeSelector | toYaml | nindent 8 }}
         {{- end }}
       {{- end }}
+      {{- .Values.nodeExclusive }}
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -37,6 +38,7 @@ spec:
                 values:
                 - post2log
             topologyKey: "kubernetes.io/hostname"
+      {{- end }}
       containers:
       # post2log server
       - name: post2log

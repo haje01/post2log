@@ -28,7 +28,9 @@ fluentd:
 # 앱 이름. 엔드포인트는 `/postback/앱이름` 형식으로 결정된다
 appName: test
 # 포스트백 서버 포트. 기본값 80
-port: 80  
+port: 80 
+# 노드 당 하나의 post2log 만 존재할지 여부
+nodeExclusive: true
 # 노드포트 이용시 포트. 공백이면 사용 않음
 nodePort: ""
 # 배포 대상 노드 셀렉터
