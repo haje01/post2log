@@ -1,0 +1,25 @@
+appName: test 
+ingress:
+  enabled: fase
+fluentd: 
+  extraCfg: |
+    <match {{ .Values.appName }}> 
+      @type influxdb
+      host "myi-influxdb"
+      port 8086
+      dbname post2log
+      user admin
+      password admindjemals
+      time_precision ns
+      use_ssl false
+      <buffer>
+        @type memory
+        chunk_limit_size 1m
+        flush_mode interval
+        flush_interval 10
+      </buffer>
+    </match>
+
+    <system>
+      log_level trace
+    </system>

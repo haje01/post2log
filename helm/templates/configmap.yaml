@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "util.fullname" . }}-fluentd-cfg
+  name: {{ include "post2log.fullname" . }}-fluentd-cfg
 data:
   fluentd.conf: |
     <source>
@@ -31,7 +31,7 @@ data:
       </rule>
     </match>
     
-{{ include "util.tplvalues.render" (dict "value" .Values.fluentd.extraCfg "context" $) | indent 4 }}
+{{ include "post2log.tplvalues.render" (dict "value" .Values.fluentd.extraCfg "context" $) | indent 4 }}
     <match **>
       @type stdout
     </match>

@@ -13,9 +13,11 @@ LOG_ROT_BYTES = int(os.environ.get('LOG_ROT_BYTES', 1024 * 1024))
 LOG_ROT_BACKUPS = int(os.environ.get('LOG_ROT_BACKUPS', 5))
 LOG_QUERYPARAM = os.environ.get('LOG_QUERYPARAM', 'true').lower() == 'true'
 SKIP_NULL_FIELDS = os.environ.get('SKIP_NULL_FIELDS', 'true').lower() == 'true'
+APP_NAME = os.environ.get('APP_NAME', '/postback')
 POD_NAME = os.environ.get('POD_NAME', 'NA')
-ENDPOINT = os.environ.get('ENDPOINT', '/postback')
+ENDPOINT = f'/postback/{APP_NAME}'
 
+print(f"APP_NAME: {APP_NAME}")
 print(f"ENDPOINT: {ENDPOINT}")
 
 app = FastAPI()
