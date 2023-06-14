@@ -58,9 +58,11 @@ uvicorn:
 
 ## 배포 
 
-배포를 위해선는 용도에 맞게 위 변수 파일을 수정하여 저장하여 그것을 이용한다. 
+배포를 위해선는 용도에 맞게 위 변수 파일을 수정하여 저장하여 그것을 이용한다. `configs/` 폴더 아래에 다양한 설정 파일의 예제가 있다.
 
-참고로 `configs/` 폴더 아래에 테스트용 변수 파일 `local.yaml` 이 있는데, 이것을 이용해 아래와 같이 Helm 으로 설치할 수 있다.
+### 로컬 테스트
+
+`configs/local.yaml` 은 로컬용 변수 파일인데, 이것을 이용해 아래와 같이 Helm 으로 설치할 수 있다.
 
 ```bash
 helm install -f configs/local.yaml p2l helm/
@@ -76,9 +78,8 @@ skaffold run -p local
 
 > Skaffold 로 설치시는 로컬 레지스트리가 있는 경우 그것을 이용한다.
 
-### 로컬 테스트
 
-로컬 클러스터인 경우 먼저 포트포워딩을 해주고,
+로컬 클러스터에서는 포트포워딩을 해주고,
 
 ```bash
 kubectl port-forward svc/post2log 8080:80
@@ -106,7 +107,14 @@ curl -X POST "localhost:8080/postback?p1=v1&p2=v2"
 - `_workerProcId` - post2log 서버 프로세스 ID
 
 
-### 인그레스 이용
+### 외부 인그레스 이용
+
+외부 클러스터에 배포하기 위해서는, 다음과 같이 원격 리포지토리에 이미지를 배포할 필요가 있다. 
+
+```bash
+skaffold build --tag=0.2.0 --push --default-repo=docker.io/haje01
+```
+
 
 외부 서버에 `K3s` 같은 쿠버네티스 배포본으로 클러스터를 설치하였다면, 배포판에 맞는 Ingress 의 Annotation 을 설정해 이용할 수 있다. 다음은 `configs/ingress.yaml` 에서 가져온 것으로, K3s 에서 기본 인그레스 컨트롤러인 Traefik 을 이용하는 설정이다.
 
