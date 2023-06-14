@@ -1,0 +1,29 @@
+appName: test 
+ingress:
+  enabled: fase
+fluentd: 
+  extraCfg: |
+    <match {{ .Values.appName }}> 
+      @type kafka2
+      brokers <카프카 IP>:<카프카 Port>
+      use_event_time true
+      default_topic {{ .Values.appName }}
+      
+      <format>
+        @type json
+      </format>
+
+      <buffer>
+        @type memory
+        flush_mode interval
+        flush_interval 10s
+      </buffer>
+
+      # 디버깅용
+      # @log_level trace
+      # get_kafka_client_log true
+    </match>"
+
+    <system>
+      log_level info
+    </system>

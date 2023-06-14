@@ -1,29 +1,49 @@
-# Helm 차트 디버깅을 위한 기본값
+# Helm 차트 기본값
 post2log:
-  image: docker.io/haje01/post2log:latest
+  image: 
+    registry: docker.io
+    repository: haje01/post2log
+    tag: latest
+    digest: ""
 fluentd:
-  image: docker.io/haje01/post2log_fluentd:latest
+  image: 
+    registry: docker.io
+    repository: haje01/post2log_fluentd
+    tag: latest
+    digest: ""
+  # Fluentd 용 스토리지 크기
   storage: 4Gi
+  # Fluentd 최종 출력 설정
   extraCfg: |
-    <match test>
-      # Helm 변수 참조 테스트
-      # Release Name : {{ .Release.Name }}
+    <match {{ .Values.appName }}>
       @type stdout
-    </match>"
-port: 80
+    </match>
+# 앱 이름. 엔드포인트는 `/postback/앱이름` 형식으로 결정된다
+appName: test
+# 포스트백 서버 포트. 기본값 80
+port: 80  
+# 노드포트 이용시 포트. 공백이면 사용 않음
 nodePort: ""
+# 배포 대상 노드 셀렉터
 nodeSelector: {}
-endpoint: /postback/test
 logQueryParam: true
+# 값이 Null 인 필드 제외 여부
 skipNullFields: true
 ingress:
+  # 자체 Ingress 사용 여부
   enabled: false
   hostname: ""
   annotations: {}
+# 포스트백 서버 (FastAPI) 의 워커 수
 workers: 1
+# 포스트백 서버의 레플리카(파드) 수
 replicas: 1
+# 로그 저장 스토리지 크기
 storage: 4Gi
+# 로그 파일 로테이션 기준 바이트수
 rotBytes: "10485760"
+# 로그 파일 로테이션 백업 수
 rotBackups: 5
 uvicorn:
+  # Uvicorn 로그 레벨
   logLevel: debug

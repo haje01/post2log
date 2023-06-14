@@ -2,20 +2,20 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "util.fullname" . }}
+  name: {{ include "post2log.fullname" . }}
   {{- if .Values.ingress.annotations }}
   annotations:
-    {{- include "util.tplvalues.render" (dict "value" .Values.ingress.annotations "context" $) | nindent 4 }}
+    {{- include "post2log.tplvalues.render" (dict "value" .Values.ingress.annotations "context" $) | nindent 4 }}
   {{- end }}
 spec:
   rules:
   - http:
       paths:
-        - path: {{ .Values.endpoint }}
+        - path: /postback/{{ .Values.appName }}
           pathType: Prefix
           backend: 
             service:
-              name: {{ include "util.fullname" . }}
+              name: {{ include "post2log.fullname" . }}
               port: 
                 number: 80 
     {{- if .Values.ingress.hostname }}
