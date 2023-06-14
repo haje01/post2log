@@ -8,7 +8,7 @@ post2log:
 fluentd:
   image: 
     registry: docker.io
-    repository: haje01/post2log_fluentd
+    repository: haje01/post2log-fluentd
     tag: latest
     digest: ""
   # Fluentd 용 스토리지 크기
