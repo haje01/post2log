@@ -27,7 +27,7 @@ spec:
           {{- .Values.nodeSelector | toYaml | nindent 8 }}
         {{- end }}
       {{- end }}
-      {{- .Values.nodeExclusive }}
+      {{- if .Values.nodeExclusive }}
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
