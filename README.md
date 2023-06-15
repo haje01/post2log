@@ -13,9 +13,9 @@ post2log 는 자체 서버와 Fluentd 가 같은 노드에 설치되어 함께 �
 ```yaml
 # Helm 차트 기본값
 post2log:
-  image: docker.io/haje01/post2log:latest
+  image: docker.io/haje01/post2log:0.2.1
 fluentd:
-  image: docker.io/haje01/post2log_fluentd:latest
+  image: docker.io/haje01/post2log_fluentd:0.2.1
   # Fluentd 용 스토리지 크기
   storage: 4Gi
   # Fluentd 최종 출력 설정
@@ -64,6 +64,14 @@ uvicorn:
 
 배포를 위해선는 용도에 맞게 위 변수 파일을 수정하여 저장하여 그것을 이용한다. `configs/` 폴더 아래에 다양한 설정 파일의 예제가 있다.
 
+먼저 이미지를 빌드해야 하는데, Skaffold 를 이용해 아래와 같이 진행한다.
+
+```bash
+skaffold build --tag=0.2.1 --push --default-repo=docker.io/haje01
+```
+
+> 위 경우 Docker Login 이 필요하다. 커스텀 이미지를 이용하려 하는 경우 자신의 리포지토리로 교체하자.
+
 ### 로컬 테스트
 
 `configs/local.yaml` 은 로컬용 변수 파일인데, 이것을 이용해 아래와 같이 Helm 으로 설치할 수 있다.
@@ -72,17 +80,23 @@ uvicorn:
 helm install -f configs/local.yaml local helm/
 ```
 
-> Helm 으로 설치시는 기본 레지스트리인 `docker.io` 를 이용한다.
+Helm 으로 설치시는 기본 레지스트리인 `docker.io` 를 이용한다.
 
 `skaffold.yaml` 의 `local` 프로파일에는 `configs/local.yaml` 을 이용하도록 지정되어 있기에 다음과 같이 Skaffold 프로파일을 지정해 설치할 수도 있다. 단, 이경우 `P2L_RELEASE` 환경 변수에 배포명을 지정해야 한다.
 
 > `skaffold.yaml` 의 배포명을 이용하지 않는 것은, 설정의 종류와 배포명이 묶이기 때문이다. 
 
+Skaffold 로 설치시는 쿠버네티스 환경에 로컬 컨테이너 이미지 레지스트리가 있는 경우 그것을 이용할 수 있다.
+
 ```
 P2L_RELEASE=local skaffold run -p local
 ```
 
-Skaffold 로 설치시는 로컬 컨테이너 이미지 레지스트리가 있는 경우 그것을 이용한다.
+아니라면 다음과 같이 기본 레포지토리를 명시해준다. 
+
+```
+P2L_RELEASE=local skaffold run -p local --default-repo=docker.io/haje01
+```
 
 테스트를 위해서 로컬 클러스터에서는 포트포워딩을 해주고,
 
@@ -113,13 +127,6 @@ curl -X POST "localhost:8080/postback?p1=v1&p2=v2"
 
 
 ### 외부 인그레스 이용
-
-외부 클러스터에 배포하기 위해서는, 다음과 같이 원격 리포지토리에 이미지를 배포할 필요가 있다. 
-
-```bash
-skaffold build --tag=0.2.0 --push --default-repo=docker.io/haje01
-```
-
 
 외부 서버에 `K3s` 같은 쿠버네티스 배포본으로 클러스터를 설치하였다면, 배포판에 맞는 Ingress 의 Annotation 을 설정해 이용할 수 있다. 다음은 `configs/ingress.yaml` 에서 가져온 것으로, K3s 에서 기본 인그레스 컨트롤러인 Traefik 을 이용하는 설정이다.
 
