@@ -11,7 +11,7 @@ spec:
   rules:
   - http:
       paths:
-        - path: /postback/{{ .Values.appName }}
+        - path: /postback/{{ include "post2log.appname" . }}
           pathType: Prefix
           backend: 
             service:
