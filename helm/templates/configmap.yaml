@@ -6,9 +6,9 @@ data:
   fluentd.conf: |
     <source>
       @type tail
-      path /data/{{ include "post2log.appname" . }}-post2log-*_*.txt
-      pos_file /fluentd-out/{{ include "post2log.appname" . }}.pos
-      tag {{ include "post2log.appname" . }}
+      path /data/{{ .Release.Name }}-post2log-*_*.txt
+      pos_file /fluentd-out/{{ .Release.Name }}.pos
+      tag {{ .Release.Name }}
       path_key filename
       read_from_head false
       refresh_interval 5
@@ -17,12 +17,12 @@ data:
       </parse>
     </source>
 
-    <filter {{ include "post2log.appname" . }}>
+    <filter {{ .Release.Name }}>
       @type record_transformer
       remove_keys filename
     </filter>
 
-    <match {{ include "post2log.appname" . }}>
+    <match {{ .Release.Name }}>
       @type rewrite_tag_filter
       <rule>
         key _path

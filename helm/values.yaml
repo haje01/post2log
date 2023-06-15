@@ -3,19 +3,19 @@ post2log:
   image: 
     registry: docker.io
     repository: haje01/post2log
-    tag: 0.2.1
+    tag: 0.2.7
     digest: ""
 fluentd:
   image: 
     registry: docker.io
     repository: haje01/post2log-fluentd
-    tag: 0.2.1
+    tag: 0.2.7
     digest: ""
   # Fluentd 용 스토리지 크기
   storage: 4Gi
   # Fluentd 최종 출력 설정
   extraCfg: |
-    <match {{ include "post2log.appname" . }}>
+    <match {{ .Release.Name }}>
       @type stdout
     </match>
 # 앱 이름. 엔드포인트는 `/postback/앱이름` 형식으로 결정된다

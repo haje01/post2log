@@ -30,16 +30,6 @@ Usage:
 {{- end -}}  
 
 {{/*
-앱 이름
-유저가 명시한 이름이 있으면 그걸 사용하고, 없으면 배포명을 이용.
-Usage:
-  {{ include "post2log.appname" . }}
-*/}}
-{{- define "post2log.appname" -}}
-    {{ if .Values.appName }}{{ .Values.appName }}{{ else }}{{ .Release.Name }}{{ end }}
-{{- end -}}
-
-{{/*
 이미지 이름
 Usage:
   {{ include "post2log.image" .Values.post2log.image }}

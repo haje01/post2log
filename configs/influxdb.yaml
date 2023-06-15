@@ -1,9 +1,8 @@
-appName: test
 ingress:
   enabled: fase
 fluentd: 
   extraCfg: |
-    <match {{ include "post2log.appname" . }}> 
+    <match {{ .Release.Name }}> 
       @type influxdb
       host "myi-influxdb"
       port 8086
