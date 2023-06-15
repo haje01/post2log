@@ -52,7 +52,7 @@ spec:
         ]
         env:
         - name: APP_NAME
-          value: "{{ .Values.appName }}"
+          value: "{{ include "post2log.appname" . }}"
         - name: LOG_QUERYPARAM
           value: "{{ .Values.logQueryParam }}"
         - name: SKIP_NULL_FIELDS

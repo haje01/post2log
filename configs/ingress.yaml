@@ -3,7 +3,7 @@ ingress:
   enabled: false
 fluentd: 
   extraCfg: |
-    <match {{ .Values.appName }}> 
+    <match {{ include "post2log.appname" . }}> 
       @type influxdb
       host "myi-influxdb"
       port 8086

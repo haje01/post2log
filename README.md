@@ -20,13 +20,11 @@ fluentd:
   storage: 4Gi
   # Fluentd 최종 출력 설정
   extraCfg: |
-    <match {{ .Values.appName }}>
-      # Helm 변수 참조 테스트
-      # Release Name : {{ .Release.Name }}
+    <match {{ include "post2log.appname" . }}>
       @type stdout
     </match>"
 # 앱 이름. 엔드포인트는 `/postback/앱이름` 형식으로 결정된다
-appName: test
+appName: noname
 # 포스트백 서버 포트. 기본값 80
 port: 80 
 # 노드 당 하나의 post2log 만 존재할지 여부
@@ -58,6 +56,10 @@ uvicorn:
   logLevel: debug
 ```
 
+`appName` 은 포스트백을 받고자 하는 앱의 이름인데 엔드 포인트나 로그 파일명 등에 사용된다. 
+
+> 별도로 명시하지 않으면 배포명 (Release Name) 을 이용하는 것이 정책이다. 이를 적용하기 위해 `appName` 이 필요한 각종 설정에 `post2log.appname` 함수가 이용된다. 위의 `fluentd.extraCfg` 를 참고하자.
+ 
 ## 배포 
 
 배포를 위해선는 용도에 맞게 위 변수 파일을 수정하여 저장하여 그것을 이용한다. `configs/` 폴더 아래에 다양한 설정 파일의 예제가 있다.
@@ -67,21 +69,22 @@ uvicorn:
 `configs/local.yaml` 은 로컬용 변수 파일인데, 이것을 이용해 아래와 같이 Helm 으로 설치할 수 있다.
 
 ```bash
-helm install -f configs/local.yaml p2l helm/
+helm install -f configs/local.yaml local helm/
 ```
 
 > Helm 으로 설치시는 기본 레지스트리인 `docker.io` 를 이용한다.
 
-`skaffold.yaml` 의 `local` 프로파일에는 `configs/local.yaml` 을 이용하도록 지정되어 있기에 다음과 같이 Skaffold 프로파일을 지정해 설치할 수도 있다.
+`skaffold.yaml` 의 `local` 프로파일에는 `configs/local.yaml` 을 이용하도록 지정되어 있기에 다음과 같이 Skaffold 프로파일을 지정해 설치할 수도 있다. 단, 이경우 `P2L_RELEASE` 환경 변수에 배포명을 지정해야 한다.
+
+> `skaffold.yaml` 의 배포명을 이용하지 않는 것은, 설정의 종류와 배포명이 묶이기 때문이다. 
 
 ```
-skaffold run -p local
+P2L_RELEASE=local skaffold run -p local
 ```
 
-> Skaffold 로 설치시는 로컬 레지스트리가 있는 경우 그것을 이용한다.
+Skaffold 로 설치시는 로컬 컨테이너 이미지 레지스트리가 있는 경우 그것을 이용한다.
 
-
-로컬 클러스터에서는 포트포워딩을 해주고,
+테스트를 위해서 로컬 클러스터에서는 포트포워딩을 해주고,
 
 ```bash
 kubectl port-forward svc/post2log 8080:80
@@ -138,11 +141,11 @@ ingress:
   enabled: fase
 fluentd: 
   extraCfg: |
-    <match {{ .Values.appName }}> 
+    <match {{ include "post2log.appname" . }}> 
       @type kafka2
       brokers <카프카 IP>:<카프카 Port>
       use_event_time true
-      default_topic {{ .Values.appName }}
+      default_topic {{ include "post2log.appname" . }}
       
       <format>
         @type json
@@ -181,7 +184,7 @@ ingress:
 skipNullFields: true
 fluentd: 
   extraCfg: |
-    <match {{ .Values.appName }}> 
+    <match {{ include "post2log.appname" . }}> 
       @type influxdb
       host "myi-influxdb"
       port 8086

@@ -10,7 +10,7 @@ build:
 deploy:
   helm:
     releases:
-    - name: p2l
+    - name: '{{ .P2L_RELEASE }}'
       chartPath: helm
       skipBuildDependencies: true
       setValueTemplates:
@@ -24,9 +24,9 @@ deploy:
         fluentd.image.digest: '{{ .IMAGE_DIGEST_post2log_fluentd }}'
 
 profiles:
-- name: test 
+- name: local 
   patches: 
   - op: add 
     path: /deploy/helm/releases/0/valuesFiles
     value: 
-    - configs/test.yaml
+    - configs/local.yaml
