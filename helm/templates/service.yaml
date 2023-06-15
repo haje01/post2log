@@ -8,7 +8,7 @@ spec:
   type: NodePort
   {{- end }}
   selector:
-    app: post2log-{{ .Release.Name }}
+    app: {{ .Release.Name }}-post2log
   ports:
   - port: {{ .Values.port }}
     targetPort: 8000
