@@ -25,7 +25,7 @@ worker_id = os.getpid()
 
 
 def create_logger(worker_id: int):
-    logger = logging.getLogger(f"worker_{worker_id}")
+    logger = logging.getLogger(f"{POD_NAME}_{worker_id}")
     logger.setLevel(logging.INFO)
 
     log_filename = f"/data/{POD_NAME}_{worker_id}.txt"

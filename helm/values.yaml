@@ -3,13 +3,13 @@ post2log:
   image: 
     registry: docker.io
     repository: haje01/post2log
-    tag: 0.2.7
+    tag: 0.2.8
     digest: ""
 fluentd:
   image: 
     registry: docker.io
     repository: haje01/post2log-fluentd
-    tag: 0.2.7
+    tag: 0.2.8
     digest: ""
   # Fluentd 용 스토리지 크기
   storage: 4Gi
@@ -18,8 +18,6 @@ fluentd:
     <match {{ .Release.Name }}>
       @type stdout
     </match>
-# 앱 이름. 엔드포인트는 `/postback/앱이름` 형식으로 결정된다
-appName: noname
 # 포스트백 서버 포트. 기본값 80
 port: 80 
 # 노드 당 하나의 post2log 만 존재할지 여부
