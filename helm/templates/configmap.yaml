@@ -8,7 +8,7 @@ data:
       @type tail
       path /data/{{ .Release.Name }}-post2log-*_*.txt
       pos_file /fluentd-out/{{ .Release.Name }}.pos
-      tag {{ .Release.Name }}
+      tag post2log
       path_key filename
       read_from_head false
       refresh_interval 5
@@ -17,12 +17,12 @@ data:
       </parse>
     </source>
 
-    <filter {{ .Release.Name }}>
+    <filter post2log>
       @type record_transformer
       remove_keys filename
     </filter>
 
-    <match {{ .Release.Name }}>
+    <match post2log>
       @type rewrite_tag_filter
       <rule>
         key _path
