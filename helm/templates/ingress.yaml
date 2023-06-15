@@ -2,7 +2,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "post2log.fullname" . }}
+  name: {{ .Release.Name }}
   {{- if .Values.ingress.annotations }}
   annotations:
     {{- include "post2log.tplvalues.render" (dict "value" .Values.ingress.annotations "context" $) | nindent 4 }}
@@ -11,7 +11,7 @@ spec:
   rules:
   - http:
       paths:
-        - path: /postback/{{ include "post2log.appname" . }}
+        - path: /postback/{{ .Release.Name }}
           pathType: Prefix
           backend: 
             service:

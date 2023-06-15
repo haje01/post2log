@@ -13,18 +13,16 @@ post2log 는 자체 서버와 Fluentd 가 같은 노드에 설치되어 함께 �
 ```yaml
 # Helm 차트 기본값
 post2log:
-  image: docker.io/haje01/post2log:0.2.1
+  image: docker.io/haje01/post2log:0.2.7
 fluentd:
-  image: docker.io/haje01/post2log_fluentd:0.2.1
+  image: docker.io/haje01/post2log_fluentd:0.2.7
   # Fluentd 용 스토리지 크기
   storage: 4Gi
   # Fluentd 최종 출력 설정
   extraCfg: |
-    <match {{ include "post2log.appname" . }}>
+    <match {{ .Release.Name }}>
       @type stdout
     </match>"
-# 앱 이름. 엔드포인트는 `/postback/앱이름` 형식으로 결정된다
-appName: noname
 # 포스트백 서버 포트. 기본값 80
 port: 80 
 # 노드 당 하나의 post2log 만 존재할지 여부
@@ -56,10 +54,6 @@ uvicorn:
   logLevel: debug
 ```
 
-`appName` 은 포스트백을 받고자 하는 앱의 이름인데 엔드 포인트나 로그 파일명 등에 사용된다. 
-
-> 별도로 명시하지 않으면 배포명 (Release Name) 을 이용하는 것이 정책이다. 이를 적용하기 위해 `appName` 이 필요한 각종 설정에 `post2log.appname` 함수가 이용된다. 위의 `fluentd.extraCfg` 를 참고하자.
- 
 ## 배포 
 
 배포를 위해선는 용도에 맞게 위 변수 파일을 수정하여 저장하여 그것을 이용한다. `configs/` 폴더 아래에 다양한 설정 파일의 예제가 있다.
@@ -67,7 +61,7 @@ uvicorn:
 먼저 이미지를 빌드해야 하는데, Skaffold 를 이용해 아래와 같이 진행한다.
 
 ```bash
-skaffold build --tag=0.2.1 --push --default-repo=docker.io/haje01
+skaffold build --tag=0.2.7 --push --default-repo=docker.io/haje01
 ```
 
 > 위 경우 Docker Login 이 필요하다. 커스텀 이미지를 이용하려 하는 경우 자신의 리포지토리로 교체하자.
@@ -77,8 +71,11 @@ skaffold build --tag=0.2.1 --push --default-repo=docker.io/haje01
 `configs/local.yaml` 은 로컬용 변수 파일인데, 이것을 이용해 아래와 같이 Helm 으로 설치할 수 있다.
 
 ```bash
-helm install -f configs/local.yaml local helm/
+helm install -f configs/local.yaml test helm/
 ```
+
+포스트백을 받을 엔드포인트는 `/postback/설치명` 형식으로 구성된다. 위 설치의 경우 엔드포인트는 `/postback/test` 이다.
+
 
 Helm 으로 설치시는 기본 레지스트리인 `docker.io` 를 이용한다.
 
@@ -95,7 +92,7 @@ P2L_RELEASE=local skaffold run -p local
 아니라면 다음과 같이 기본 레포지토리를 명시해준다. 
 
 ```
-P2L_RELEASE=local skaffold run -p local --default-repo=docker.io/haje01
+P2L_RELEASE=test skaffold run -p local --default-repo=docker.io/haje01
 ```
 
 테스트를 위해서 로컬 클러스터에서는 포트포워딩을 해주고,
@@ -143,16 +140,15 @@ ingress:
 다음은 `configs/kafka.yaml` 파일의 내용으로, 수집된 로그를 카프카로 보내는 예이다.
 
 ```yaml
-appName: test 
 ingress:
   enabled: fase
 fluentd: 
   extraCfg: |
-    <match {{ include "post2log.appname" . }}> 
+    <match {{ .Release.Name }}> 
       @type kafka2
       brokers <카프카 IP>:<카프카 Port>
       use_event_time true
-      default_topic {{ include "post2log.appname" . }}
+      default_topic {{ .Release.Name }}
       
       <format>
         @type json
@@ -185,15 +181,14 @@ fluentd:
 다음은 `configs/kafka.yaml` 파일의 내용으로, 수집된 로그를 InfluxDB 로 보내는 예이다.
 
 ```yaml
-appName: test 
 ingress:
   enabled: fase
 skipNullFields: true
 fluentd: 
   extraCfg: |
-    <match {{ include "post2log.appname" . }}> 
+    <match {{ .Release.Name }}> 
       @type influxdb
-      host "myi-influxdb"
+      host <카프카 IP>:<카프카 Port>
       port 8086
       dbname post2log
       user admin
@@ -213,7 +208,7 @@ fluentd:
     </system>
 ```
 
-위와 같이 하면, 엔드포인트 `/postback/test` 호출의 내용을 InfluxDB 의 `post2log` 데이터베이스 아래 `test` 메저먼트 (Measurement) 로 저장하게 된다. 
+위와 같이 하면, 엔드포인트 호출의 내용을 InfluxDB 의 `post2log` 데이터베이스 아래 `test` 메저먼트 (Measurement) 로 저장하게 된다. 
 
 > InfluxDB 에 `post2log` 데이터베이스는 미리 만들어 두어야 한다.
 

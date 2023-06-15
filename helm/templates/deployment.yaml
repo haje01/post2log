@@ -51,8 +51,8 @@ spec:
           "--log-level", "{{ .Values.uvicorn.logLevel }}"
         ]
         env:
-        - name: APP_NAME
-          value: "{{ include "post2log.appname" . }}"
+        - name: REL_NAME
+          value: "{{ .Release.Name }}"
         - name: LOG_QUERYPARAM
           value: "{{ .Values.logQueryParam }}"
         - name: SKIP_NULL_FIELDS

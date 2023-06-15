@@ -1,13 +1,12 @@
-appName: test 
 ingress:
   enabled: fase
 fluentd: 
   extraCfg: |
-    <match {{ include "post2log.appname" . }}> 
+    <match {{ .Release.Name }}> 
       @type kafka2
       brokers <카프카 IP>:<카프카 Port>
       use_event_time true
-      default_topic {{ include "post2log.appname" . }}
+      default_topic {{ .Release.Name }}
       
       <format>
         @type json
