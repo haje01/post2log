@@ -3,13 +3,13 @@ post2log:
   image: 
     registry: docker.io
     repository: haje01/post2log
-    tag: latest
+    tag: 0.2.1
     digest: ""
 fluentd:
   image: 
     registry: docker.io
     repository: haje01/post2log-fluentd
-    tag: latest
+    tag: 0.2.1
     digest: ""
   # Fluentd 용 스토리지 크기
   storage: 4Gi

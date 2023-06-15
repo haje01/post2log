@@ -1,4 +1,4 @@
-appName: test
+appName: lottcal
 nodeExclusive: false
 ingress:
   enabled: fase
