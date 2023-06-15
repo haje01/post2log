@@ -8,7 +8,7 @@ data:
       @type tail
       path /data/{{ include "post2log.appname" . }}-post2log-*_*.txt
       pos_file /fluentd-out/post2log.pos
-      tag post2log
+      tag {{ include "post2log.appname" . }}
       path_key filename
       read_from_head false
       refresh_interval 5
@@ -17,12 +17,12 @@ data:
       </parse>
     </source>
 
-    <filter post2log>
+    <filter {{ include "post2log.appname" . }}>
       @type record_transformer
       remove_keys filename
     </filter>
 
-    <match post2log>
+    <match {{ include "post2log.appname" . }}>
       @type rewrite_tag_filter
       <rule>
         key _path
