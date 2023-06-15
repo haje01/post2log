@@ -2,7 +2,7 @@ apiVersion: skaffold/v4beta3
 kind: Config
 build:
   artifacts:
-  - image: post2log
+  - image: post2log-server
     context: server 
   - image: post2log-fluentd
     context: fluentd
@@ -14,10 +14,10 @@ deploy:
       chartPath: helm
       skipBuildDependencies: true
       setValueTemplates:
-        post2log.image.registry: '{{ .IMAGE_DOMAIN_post2log }}'
-        post2log.image.repository: '{{ .IMAGE_REPO_NO_DOMAIN_post2log }}'
-        post2log.image.tag: '{{ .IMAGE_TAG_post2log }}'
-        post2log.image.digest: '{{ .IMAGE_DIGEST_post2log }}'
+        post2log.image.registry: '{{ .IMAGE_DOMAIN_post2log_server }}'
+        post2log.image.repository: '{{ .IMAGE_REPO_NO_DOMAIN_post2log_server }}'
+        post2log.image.tag: '{{ .IMAGE_TAG_post2log_server }}'
+        post2log.image.digest: '{{ .IMAGE_DIGEST_post2log_server }}'
         fluentd.image.registry: '{{ .IMAGE_DOMAIN_post2log_fluentd }}'
         fluentd.image.repository: '{{ .IMAGE_REPO_NO_DOMAIN_post2log_fluentd }}'
         fluentd.image.tag: '{{ .IMAGE_TAG_post2log_fluentd }}'

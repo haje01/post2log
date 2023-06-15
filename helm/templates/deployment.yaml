@@ -6,11 +6,11 @@ spec:
   replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
-      app: post2log-{{ .Release.Name }}
+      app: {{ .Release.Name }}-post2log
   template:
     metadata:
       labels:
-        app: post2log-{{ .Release.Name }}
+        app: {{ .Release.Name }}-post2log
     spec:
       initContainers:
       - name: chown-init
@@ -36,13 +36,13 @@ spec:
               - key: app
                 operator: In
                 values:
-                - post2log-{{ .Release.Name }}
+                - {{ .Release.Name }}-post2log
             topologyKey: "kubernetes.io/hostname"
       {{- end }}
       containers:
       # post2log server
-      - name: post2log-{{ .Release.Name }}
-        image: {{ include "post2log.image" .Values.post2log.image }}
+      - name: server
+        image: {{ include "post2log.image" .Values.server.image }}
         command: ["uvicorn"]        
         args: [
           "server:app", 

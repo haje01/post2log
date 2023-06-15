@@ -13,9 +13,9 @@ post2log 는 자체 서버와 Fluentd 가 같은 노드에 설치되어 함께 �
 ```yaml
 # Helm 차트 기본값
 post2log:
-  image: docker.io/haje01/post2log:0.2.8
+  image: docker.io/haje01/post2log-server:0.2.9
 fluentd:
-  image: docker.io/haje01/post2log_fluentd:0.2.8
+  image: docker.io/haje01/post2log-fluentd:0.2.9
   # Fluentd 용 스토리지 크기
   storage: 4Gi
   # Fluentd 최종 출력 설정
@@ -61,7 +61,7 @@ uvicorn:
 먼저 이미지를 빌드해야 하는데, Skaffold 를 이용해 아래와 같이 진행한다.
 
 ```bash
-skaffold build --tag=0.2.8 --push --default-repo=docker.io/haje01
+skaffold build --tag=0.2.9 --push --default-repo=docker.io/haje01
 ```
 
 > 위 경우 Docker Login 이 필요하다. 커스텀 이미지를 이용하려 하는 경우 자신의 리포지토리로 교체하자.
