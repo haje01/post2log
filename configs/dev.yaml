@@ -1,6 +1,6 @@
 # 외부 시스템 (anly 로 설치된) 과 연동 개발
 ingress:
-  enabled: fase
+  enabled: false
 fluentd: 
   extraCfg: |
     <match {{ .Release.Name }}> 
