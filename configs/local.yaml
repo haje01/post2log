@@ -1,6 +1,6 @@
 nodeExclusive: false
 ingress:
-  enabled: fase
+  enabled: false
 fluentd: 
   extraCfg: |
     <system>

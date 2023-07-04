@@ -1,5 +1,5 @@
 ingress:
-  enabled: fase
+  enabled: false
 fluentd: 
   extraCfg: |
     <match {{ .Release.Name }}> 
