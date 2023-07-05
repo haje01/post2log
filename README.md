@@ -68,6 +68,15 @@ uvicorn:
 
 post2log 는 버전 관리를 단순히하기 위해 Helm 차트 버전과 앱 버전(=컨테이너 이미지 버전) 을 하나로 통일한다. Dockerfile, 소스코드 및 매니페스트 파일을 수정 할 때마다 차트와 앱버전을 동시에 올려주는 방식이다. (버전은 'helm/Chart.yaml` 참조)
 
+> 버전 업을 할 때는 `helm/` 폴더 아래에서, 다음처럼 `chartrepo/` 도 함께 갱신해주자.
+> ```
+> helm package .
+> mv post2log-0.2.13.tgz chartrepo/
+> cd chartrepo && 
+> helm repo index .
+> git add post2log-0.2.13.tgz
+> ```
+
 먼저 이미지를 빌드해야 하는데, Skaffold 를 이용해 아래와 같이 진행한다.
 
 ```bash

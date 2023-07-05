@@ -2,8 +2,18 @@ apiVersion: v1
 entries:
   post2log:
   - apiVersion: v2
+    appVersion: 0.2.13
+    created: "2023-07-05T13:24:13.976630179+09:00"
+    description: HTTP Postback 이벤트를 Fluentd 로 전달하는 post2log 차트
+    digest: a89fbd37c84e19d138a8937ce881f70d129eab2e84205351d8288f3181271d2f
+    name: post2log
+    type: application
+    urls:
+    - post2log-0.2.13.tgz
+    version: 0.2.13
+  - apiVersion: v2
     appVersion: 0.2.9
-    created: "2023-06-15T17:45:17.119526138+09:00"
+    created: "2023-07-05T13:24:13.973779774+09:00"
     description: HTTP Postback 이벤트를 Fluentd 로 전달하는 post2log 차트
     digest: 3fac6fe523f9fa908d143902da7119dd79b6388f3407aa0680173a55266bf5c2
     name: post2log
@@ -11,14 +21,4 @@ entries:
     urls:
     - post2log-0.2.12.tgz
     version: 0.2.12
-  - apiVersion: v2
-    appVersion: 0.1.0
-    created: "2023-06-15T17:45:17.118034833+09:00"
-    description: HTTP Postback 이벤트를 Fluentd 로 전달하는 post2log 차트
-    digest: cb71e29408756a9b1e7c2bdba27d9a2003c641331e922819e252d01997a92816
-    name: post2log
-    type: application
-    urls:
-    - post2log-0.1.4.tgz
-    version: 0.1.4
-generated: "2023-06-15T17:45:17.117202029+09:00"
+generated: "2023-07-05T13:24:13.972225471+09:00"
