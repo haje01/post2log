@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ include "post2log.fullname" . }}
 spec:
@@ -74,7 +74,7 @@ spec:
           initialDelaySeconds: 5
           periodSeconds: 5  
         volumeMounts:
-        - name: post2log-vol
+        - name: post2log
           mountPath: /data
 
       # Fluentd
@@ -90,20 +90,28 @@ spec:
         volumeMounts:
         - name: fluentd-cfg-vol
           mountPath: /fluentd/etc
-        - name: post2log-vol
+        - name: post2log
           mountPath: /data
           readOnly: true
         - name: fluentd-out
           mountPath: /fluentd-out
-
       volumes:
-      - name: post2log-vol
-        persistentVolumeClaim:
-          claimName: {{ include "post2log.fullname" . }}
       - name: fluentd-cfg-vol
         configMap:
           name: {{ include "post2log.fullname" . }}-fluentd-cfg
-      - name: fluentd-out
-        persistentVolumeClaim:
-          claimName: {{ include "post2log.fullname" . }}-fluentd-out
 
+  volumeClaimTemplates:
+  - metadata:
+      name: post2log
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: {{ .Values.storage }}
+  - metadata:
+      name: fluentd-out
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: {{ .Values.storage }}

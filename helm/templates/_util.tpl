@@ -37,3 +37,4 @@ Usage:
 {{- define "post2log.image" -}}
     {{ if .registry }}{{ .registry }}/{{ end }}{{ .repository }}{{ if .tag }}:{{ .tag }}{{ end }}{{ if .digest}}@{{ .digest }}{{ end }}
 {{- end -}}
+
