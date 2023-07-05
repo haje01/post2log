@@ -1,6 +1,8 @@
-# 외부 시스템 (anly 로 설치된) 과 연동 개발
+# (anly 로 설치된) abmon 과 연동 개발 
+nodeExclusive: false
 ingress:
-  enabled: false
+  enabled: true
+replicas: 1
 fluentd: 
   extraCfg: |
     <match {{ .Release.Name }}> 

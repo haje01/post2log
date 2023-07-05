@@ -66,7 +66,7 @@ skaffold build --tag=0.2.9 --push --default-repo=docker.io/haje01
 
 > 위 경우 Docker Login 이 필요하다. 커스텀 이미지를 이용하려 하는 경우 자신의 리포지토리로 교체하자.
 
-### 로컬 테스트
+### 로컬 배포
 
 `configs/local.yaml` 은 로컬용 변수 파일인데, 이것을 이용해 아래와 같이 Helm 으로 설치할 수 있다.
 
@@ -85,13 +85,13 @@ Helm 으로 설치시는 기본 레지스트리인 `docker.io` 를 이용한다.
 
 Skaffold 로 설치시는 쿠버네티스 환경에 로컬 컨테이너 이미지 레지스트리가 있는 경우 그것을 이용할 수 있다.
 
-```
+```bash
 P2L_RELEASE=local skaffold run -p local
 ```
 
 아니라면 다음과 같이 기본 레포지토리를 명시해준다. 
 
-```
+```bash
 P2L_RELEASE=test skaffold run -p local --default-repo=docker.io/haje01
 ```
 
@@ -119,8 +119,6 @@ curl -X POST "localhost:8080/postback?p1=v1&p2=v2"
 - `_path` - 호출의 엔드포인드 경로
 - `_timestamp` - 호출의 타임스탬프
 - `_dateTimeGMT` - 호출의 UTC 기준 일시
-- `_workerPodHash` - post2log 서버가 위치한 파드의 해쉬 
-- `_workerProcId` - post2log 서버 프로세스 ID
 
 
 ### 외부 인그레스 이용
@@ -217,6 +215,8 @@ InfluxDB 는 null 값을 직접 지원하지 않기에, 기본적으로 null 값
 ## 최적화와 배포
 
 ### 적절한 워커 수와 레플리카 지정
+
+`workers` 를 늘리는 경우 uvicorn 서버의 워커를 늘리는 것인데, 이 경우 파드의 CPU 리소스 제한을 적절히 설정해 주어야 할 것이다. `replicas` 를 늘리면 post2log 서버의 파드 수가 늘어나 분산 처리의 효과를 기대할 수 있으나 적절히 노드를 추가해 주어야 할 것이다. 
 
 기본적으로 HTTP 요청을 FastAPI 를 통해 비동기로 받은 뒤 파일에 저장하는 단순한 일이기에, 클러스터 노드를 추가하거나 `workers` 나 `replicas` 를 늘려주는 것으로 성능이 바로 향상되지 않을 수 있다. Fluentd 설정에 따른 다운스트림 작업의 경중에도 영향을 받을 것으로 생각되기에, 필요한 설정 후 최적화를 위한 다양한 실험이 필요할 것이다.
 
