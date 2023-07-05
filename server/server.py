@@ -14,7 +14,7 @@ LOG_ROT_BACKUPS = int(os.environ.get('LOG_ROT_BACKUPS', 5))
 LOG_QUERYPARAM = os.environ.get('LOG_QUERYPARAM', 'true').lower() == 'true'
 SKIP_NULL_FIELDS = os.environ.get('SKIP_NULL_FIELDS', 'true').lower() == 'true'
 REL_NAME = os.environ['REL_NAME']
-POD_INDEX = os.environ.get('POD_INDEX', 'NA')
+POD_NAME = os.environ.get('POD_NAME', 'NA')
 ENDPOINT = f'/postback/{REL_NAME}'
 
 print(f"REL_NAME: {REL_NAME}")
@@ -25,10 +25,10 @@ worker_id = os.getpid()
 
 
 def create_logger(worker_id: int):
-    logger = logging.getLogger(f"{POD_INDEX}_{worker_id}")
+    logger = logging.getLogger(f"{POD_NAME}_{worker_id}")
     logger.setLevel(logging.INFO)
 
-    log_filename = f"/data/{POD_INDEX}_{worker_id}.txt"
+    log_filename = f"/data/{POD_NAME}_{worker_id}.txt"
     handler = RotatingFileHandler(log_filename, maxBytes=LOG_ROT_BYTES, backupCount=LOG_ROT_BACKUPS)
     formatter = logging.Formatter(LOG_FORMAT)
     handler.setFormatter(formatter)    

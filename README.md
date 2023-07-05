@@ -16,13 +16,13 @@ server:
   image: 
     registry: ""
     repository: library/post2log-server
-    tag: 0.2.15
+    tag: 0.2.16
     digest: ""
 fluentd:
   image: 
     registry: ""
     repository: library/post2log-fluentd
-    tag: 0.2.15
+    tag: 0.2.16
     digest: ""
   # Fluentd 용 스토리지 크기
   storage: 4Gi
@@ -71,16 +71,16 @@ post2log 는 버전 관리를 단순히하기 위해 Helm 차트 버전과 앱 �
 > 버전 업을 할 때는 `helm/` 폴더 아래에서, 다음처럼 `chartrepo/` 도 함께 갱신해주자.
 > ```
 > helm package .
-> mv post2log-0.2.15.tgz chartrepo/
+> mv post2log-0.2.16.tgz chartrepo/
 > cd chartrepo && 
 > helm repo index .
-> git add post2log-0.2.15.tgz
+> git add post2log-0.2.16.tgz
 > ```
 
 먼저 이미지를 빌드해야 하는데, Skaffold 를 이용해 아래와 같이 진행한다.
 
 ```bash
-skaffold build --tag=0.2.15 --push --default-repo=docker.io/haje01
+skaffold build --tag=0.2.16 --push --default-repo=docker.io/haje01
 ```
 
 > 위 경우 Docker Login 이 필요하다. 커스텀 이미지를 이용하려 하는 경우 자신의 리포지토리로 교체하자.
