@@ -3,13 +3,13 @@ server:
   image: 
     registry: ""
     repository: haje01/post2log-server
-    tag: 0.2.21
+    tag: 0.2.22
     digest: ""
 fluentd:
   image: 
     registry: ""
     repository: haje01/post2log-fluentd
-    tag: 0.2.21
+    tag: 0.2.22
     digest: ""
   # Fluentd 용 스토리지 크기
   storage: 4Gi
