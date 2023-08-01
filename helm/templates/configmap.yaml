@@ -23,7 +23,7 @@ data:
       {{- with .Values.fluentd.duplicateFields }}
       <record>
       {{- range $old_key, $new_key := . }}
-        {{ $new_key }} ${record["{{ $old_key }}"]}
+        "{{ $new_key }}" ${record["{{ $old_key }}"]}
       {{- end }}
       </record>
       {{- end }}
