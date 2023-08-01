@@ -24,7 +24,7 @@ data:
       enable_ruby
       <record>
       {{- range $old_key, $new_key := . }}
-        "{{ $new_key }}" ${record["{{ $old_key }}"]} if record.has_key?("{{ $old_key }}")
+        "{{ $new_key }}" ${record["{{ $old_key }}"] if record.has_key?("{{ $old_key }}")}
       {{- end }}
       </record>
       {{- end }}
