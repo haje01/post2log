@@ -3,16 +3,18 @@ server:
   image: 
     registry: ""
     repository: haje01/post2log-server
-    tag: 0.2.17
+    tag: 0.2.18
     digest: ""
 fluentd:
   image: 
     registry: ""
     repository: haje01/post2log-fluentd
-    tag: 0.2.17
+    tag: 0.2.18
     digest: ""
   # Fluentd 용 스토리지 크기
   storage: 4Gi
+  # 복제할 필드 리스트
+  duplicateFields: {}
   # Fluentd 최종 출력 설정
   extraCfg: |
     <match {{ .Release.Name }}>

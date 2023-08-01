@@ -20,6 +20,13 @@ data:
     <filter post2log>
       @type record_transformer
       remove_keys filename
+      {{- with .Values.fluentd.duplicateFields }}
+      <record>
+      {{- range $old_key, $new_key := . }}
+        {{ $new_key }} ${record["{{ $old_key }}"]}
+      {{- end }}
+      </record>
+      {{- end }}
     </filter>
 
     <match post2log>
