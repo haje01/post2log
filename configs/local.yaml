@@ -2,6 +2,8 @@ nodeExclusive: false
 ingress:
   enabled: false
 fluentd: 
+  duplicateFields:
+    "a": "a2"
   extraCfg: |
     <system>
       log_level trace
